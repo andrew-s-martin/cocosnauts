@@ -1,0 +1,5 @@
+*.DS_Store
+proj.*/
+cocos2d/
+CMakeLists.txt
+.cocos-project.json
