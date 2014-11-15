@@ -25,7 +25,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     director->setAnimationInterval(1.0 / 60);
 
     // create a scene. it's an autorelease object
-    auto scene = LevelScene::createScene("jamietest.json");
+    auto scene = LevelScene::createScene("Level0.json");
 
     // run
     director->runWithScene(scene);

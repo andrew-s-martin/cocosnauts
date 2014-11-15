@@ -30,9 +30,12 @@ bool LevelScene::init() {
     this->scheduleUpdate();
     
     ship = Entity::create();
+    ship->sprite->setTexture("triangle.png");
+    ship->setScale(0.15f);
     this->addChild(ship);
     
     goal = Entity::create();
+    goal->setScale(0.15f);
     this->addChild(goal);
     
     curTouch = nullptr;

@@ -1,0 +1,24 @@
+{
+    // essential
+	"levelSize": [1,1], // multiples of screen dimensions
+	"launchPos": [0.2, 0.2], // factor of size
+	"goalPos": [0.8, 0.8], // factor of size
+    
+	"entities": { // put optional entities in here
+		"planet": {
+			"pos": [0.1,0.3], // factor of size
+			"mass": 10,
+			"radius": 1, // sprite scale
+			"vel": [1,0.2]
+            
+            "orbit": {
+                "radius": 2, // factor of parent radius
+                "speed": 0.2, // rev per sec
+                "planet": {
+                    "mass": 10,
+                    "radius": 0.25
+                }
+            }
+		}
+	}
+}

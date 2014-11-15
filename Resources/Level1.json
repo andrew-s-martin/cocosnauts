@@ -1,14 +1,14 @@
 {
     "levelName": "LevelI",
-    "levelSize": [1.0,1.0], // multiples of screen size
-	"launchPos": [0.2, 0.2], // percentage of level size
+    "levelSize": [1.0,1.0],
+	"launchPos": [0.2, 0.2],
 	"goalPos": [0.8, 0.8],
 
 	"entities": {
 		"planet": {
-			"pos": [0.5,0.5], //middle of screen
-			"mass" = 1.0,
-			"radius" = 1.0,
+			"pos": [0.5,0.5],
+			"mass": 1.0,
+			"radius": 1.0,
 			"vel": [0.0,0.0]
         }
 	}
