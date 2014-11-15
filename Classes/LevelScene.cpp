@@ -43,13 +43,7 @@ bool LevelScene::init() {
 void LevelScene::update(float dt) {
     for (auto e : entities) {
         e->setPosition(e->getPosition() + e->vel);
-        for (auto o : e->orbits) {
-            o->curAngle += o->speed * 2 * M_PI * dt;
-            auto parentRadius = e->sprite->getContentSize().height/2;
-            float x = cosf(o->curAngle) * o->radius * parentRadius;
-            float y = sinf(o->curAngle) * o->radius * parentRadius;
-            o->e->setPosition(x, y);
-        }
+        e->updateOrbits(dt);
     }
 }
 
@@ -188,8 +182,8 @@ void LevelScene::addOrbit(rapidjson::Value &oSpec, Entity *parent) {
             o->speed = propertySpec.GetDouble();
         }
         
-        else if (strcasecmp(propertyType, "clockwise") == 0) {
-            o->clockwise = propertySpec.GetBool();
+        else if (strcasecmp(propertyType, "angleDeg") == 0) {
+            o->curAngle = propertySpec.GetDouble() * M_PI / 180;
         }
     }
     auto parentRadius = parent->sprite->getContentSize().height/2;

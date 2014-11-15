@@ -23,3 +23,14 @@ bool Entity::init() {
     
     return true;
 }
+
+void Entity::updateOrbits(float dt) {
+    for (auto o : orbits) {
+        o->curAngle += o->speed * 2 * M_PI * dt;
+        auto parentRadius = sprite->getContentSize().height/2;
+        float x = cosf(o->curAngle) * o->radius * parentRadius;
+        float y = sinf(o->curAngle) * o->radius * parentRadius;
+        o->e->setPosition(x, y);
+        o->e->updateOrbits(dt);
+    }
+}

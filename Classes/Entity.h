@@ -19,10 +19,11 @@ public:
     virtual bool init();
     CREATE_FUNC(Entity);
     
+    void updateOrbits(float dt);
+    
     class Orbit {
     public:
         float radius, speed, curAngle;
-        bool clockwise;
         Entity *e;
     };
     
