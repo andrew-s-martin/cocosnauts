@@ -1,0 +1,37 @@
+{
+    "levelName": "LevelIII",
+    "levelSize": [1.0,1.0], // multiples of screen size
+    "launchPos": [0.1, 0.1], // percentage of level size
+    "goalPos": [0.9, 0.9],
+    
+    "entities": {
+        "sun":
+        {
+            "pos": [0.5, 0.5],
+            "mass" =  5.0,
+            "radius" = 2.0
+            
+            "orbit": {
+                "clockwise": true,
+                "radius" = 0.25,
+                "speed" = 1.0,
+                
+                "planet": {
+                    "radius" = 0.25,
+                    "mass" = 0.25
+                }
+            },
+                
+            "orbit": {
+                "clockwise" = false,
+                "radius" = 0.5,
+                "speed" = 2.0,
+                
+                "planet": {
+                    "radius" = 0.25
+                    "mass" = 0.25
+                }
+            }
+        }
+    }
+}
