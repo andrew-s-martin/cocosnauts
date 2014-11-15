@@ -1,5 +1,5 @@
 {
-    "levelName": "LevelII"
+    "levelName": "LevelII",
     "levelSize": [1.0,1.0],
     "launchPos": [0.1,0.9],
     "goalPos": [0.1,0.1],
@@ -7,12 +7,12 @@
     "entities": {
         "asteroidBelt": {
             "startPos": [0.0,0.5],
-            "endPos": [0.75,0.5]
+            "endPos": [0.75,0.5],
             "thickness": [0.1]
-        }
+        },
         
         "magnetPlanet": {
-            "pos": [0.5,0.75]
+            "pos": [0.5,0.75],
             "radius": 2.0,
             "mass": 2.0, 
         }
