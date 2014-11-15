@@ -7,8 +7,6 @@ AppDelegate::AppDelegate() {
 
 }
 
-//a change
-
 AppDelegate::~AppDelegate() 
 {
 }

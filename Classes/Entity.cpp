@@ -8,13 +8,14 @@
 
 #include "Entity.h"
 
+Entity::Entity() :
+mass(1),
+respondToGravity(false)
+{ }
+
 bool Entity::init() {
-    if (!Layer::init()) {
+    if (!Sprite::initWithFile("close_normal.png")) {
         return false;
     }
-    
-    graphic = Sprite::create("close_normal.png");
-    addChild(graphic);
-    
     return true;
 }
