@@ -13,9 +13,13 @@ mass(1)
 { }
 
 bool Entity::init() {
-    if (!Sprite::initWithFile("close_normal.png")) {
+    if (!Layer::init()) {
         return false;
     }
-    this->setAnchorPoint(Vec2(0.5, 0.5));
+    
+    sprite = Sprite::create("close_normal.png");
+    this->addChild(sprite);
+    this->setContentSize(Size::ZERO);
+    
     return true;
 }

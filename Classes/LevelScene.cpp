@@ -43,7 +43,13 @@ bool LevelScene::init() {
 void LevelScene::update(float dt) {
     for (auto e : entities) {
         e->setPosition(e->getPosition() + e->vel);
-        e->setRotation(e->getRotation() + 1);
+        for (auto o : e->orbits) {
+            o->curAngle += o->speed * 2 * M_PI * dt;
+            auto parentRadius = e->sprite->getContentSize().height/2;
+            float x = cosf(o->curAngle) * o->radius * parentRadius;
+            float y = sinf(o->curAngle) * o->radius * parentRadius;
+            o->e->setPosition(x, y);
+        }
     }
 }
 
@@ -116,10 +122,10 @@ Entity* LevelScene::buildEntity(rapidjson::Value &eSpec, const char* eType) {
     
     // parse eType
     if (strcasecmp(eType, "planet") == 0) {
-        e->setColor(Color3B::BLUE);
+        e->sprite->setColor(Color3B::BLUE);
     }
     else if (strcasecmp(eType, "sun") == 0) {
-        e->setColor(Color3B::YELLOW);
+        e->sprite->setColor(Color3B::YELLOW);
     }
     
     // parse properties
@@ -165,27 +171,29 @@ Entity* LevelScene::buildEntity(rapidjson::Value &eSpec, const char* eType) {
 }
 
 void LevelScene::addOrbit(rapidjson::Value &oSpec, Entity *parent) {
-    Entity::Orbit o;
+    Entity::Orbit *o = new Entity::Orbit();
     for (rapidjson::Value::MemberIterator it = oSpec.MemberonBegin(); it != oSpec.MemberonEnd(); ++it) {
         rapidjson::Value&propertySpec = it->value;
         const char* propertyType = it->name.GetString();
         
         if (propertySpec.IsObject()) { // this is the actual entity that orbits parent
-            o.e = buildEntity(propertySpec, propertyType);
+            o->e = buildEntity(propertySpec, propertyType);
         }
         
         else if (strcasecmp(propertyType, "radius") == 0) {
-            o.radius = propertySpec.GetDouble();
+            o->radius = propertySpec.GetDouble();
         }
         
         else if (strcasecmp(propertyType, "speed") == 0) {
-            o.speed = propertySpec.GetDouble();
+            o->speed = propertySpec.GetDouble();
         }
         
         else if (strcasecmp(propertyType, "clockwise") == 0) {
-            o.clockwise = propertySpec.GetBool();
+            o->clockwise = propertySpec.GetBool();
         }
     }
-    parent->addChild(o.e);
+    auto parentRadius = parent->sprite->getContentSize().height/2;
+    o->e->setPositionX(o->radius*parentRadius);
+    parent->addChild(o->e);
     parent->orbits.push_back(o);
 }

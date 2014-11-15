@@ -17,8 +17,8 @@
 			"vel": [0,0],
 
 			"orbit": {
-				"radius": 10,
-				"speed": 5,
+				"radius": 1,
+				"speed": 1,
 				"clockwise": true,
 				"planet": {
 					"mass": 10,

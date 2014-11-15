@@ -13,7 +13,7 @@
 
 USING_NS_CC;
 
-class Entity : public Sprite {
+class Entity : public Layer {
 public:
     Entity();
     virtual bool init();
@@ -21,14 +21,15 @@ public:
     
     class Orbit {
     public:
-        float radius, speed;
+        float radius, speed, curAngle;
         bool clockwise;
         Entity *e;
     };
     
     Vec2 vel;
     float maxSpeed, mass;
-    std::vector<Orbit> orbits;
+    std::vector<Orbit*> orbits;
+    Sprite* sprite;
 };
 
 #endif /* defined(__test__Entity__) */
