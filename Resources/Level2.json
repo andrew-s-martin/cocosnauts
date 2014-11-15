@@ -1,0 +1,25 @@
+{
+    "levelName": "LevelII"
+    "levelSize": [1,1],
+    "launchPos": [.1,.1]
+    "goalPos": []
+    "entity": {
+        "type": "sun",
+        "pos": [1,1],
+        "mass": 10,
+        "vel": [1,0],
+        
+        "orbit": {
+            "radius": 10,
+            "speed": 5,
+            "orbitClockwise": true,
+            "entity": {
+                "type": "planet",
+                "pos": [1,1],
+                "mass": 10,
+                "radius": 10,
+                "vel": [1,0]
+            }
+        }
+    }
+}
