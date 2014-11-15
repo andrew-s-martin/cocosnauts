@@ -13,14 +13,15 @@
 
 USING_NS_CC;
 
-class Entity : public Layer {
+class Entity : public Sprite {
 public:
+    Entity();
     virtual bool init();
     CREATE_FUNC(Entity);
     
-    Vec2 pos, vel;
-    float maxSpeed;
-    Sprite* graphic;
+    Vec2 vel;
+    float maxSpeed, mass;
+    bool respondToGravity;
 };
 
 #endif /* defined(__test__Entity__) */

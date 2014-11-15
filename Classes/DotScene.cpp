@@ -41,14 +41,24 @@ bool DotScene::init() {
 
     draw = DrawNode::create();
     this->addChild(draw);
+
+    for (int i = 0; i < 5; i++) {
+        auto e = Entity::create();
+        e->setPosition(rand()%w, rand()%h);
+        e->setScale(CCRANDOM_0_1() + 0.2f);
+        e->mass = 1 + rand()%5;
+        entities.push_back(e);
+        this->addChild(e);
+    }
     
-    e = Entity::create();
-    this->addChild(e);
+    curTouch = nullptr;
     
     return true;
 }
 
 void DotScene::update(float dt) {
+    updateDots(dt);
+    updateEntities(dt);
     draw->clear();
     for (auto dot : dots) {
         dot->col.r = (float) (rand()%255 / 255.0);
@@ -58,46 +68,53 @@ void DotScene::update(float dt) {
     }
 }
 
-void DotScene::updateEntity(cocos2d::Touch *touch, EventTouch::EventCode type) {
-    if (type == EventTouch::EventCode::BEGAN ||
-        type == EventTouch::EventCode::MOVED) {
-        auto dist = Director::getInstance()->getVisibleSize().width / 4;
-        auto eDist = touch->getLocation().distance(e->pos);
+void DotScene::updateEntities(float dt) {
+    if (curTouch) {
+        auto touchPos = curTouch->getLocation();
+        for (auto e : entities) {
+            auto deltaPos = touchPos - e->getPosition();
+            deltaPos.normalize();
+            auto maxAccel = 1 / e->mass;
+            deltaPos *= maxAccel;
+            e->vel.x += deltaPos.x;
+            e->vel.y += deltaPos.y;
+        }
     }
-    e->setPosition(touch->getLocation());
+    for (auto e : entities) {
+        e->setPosition(e->getPosition() + e->vel);
+    }
 }
 
-void DotScene::updateDots(cocos2d::Touch *touch, EventTouch::EventCode type) {
-    if (type == EventTouch::EventCode::ENDED ||
-        type == EventTouch::EventCode::CANCELLED) {
+void DotScene::updateDots(float dt) {
+    if (curTouch) {
+        for (auto dot : dots) {
+            auto dist = Director::getInstance()->getVisibleSize().width / 4;
+            auto dotDist = curTouch->getLocation().distance(dot->pos);
+            float diff = 1.0 - dotDist / dist;
+            float scale = 4;
+            dot->radius = (dotDist < dist)? dot->original_radius * (1.0 + diff*scale) : dot->original_radius;
+        }
+    } else {
         for (auto dot : dots) {
             dot->radius = dot->original_radius;
         }
-        return;
-    }
-    for (auto dot : dots) {
-        auto dist = Director::getInstance()->getVisibleSize().width / 4;
-        auto dotDist = touch->getLocation().distance(dot->pos);
-        float diff = 1.0 - dotDist / dist;
-        float scale = 4;
-        dot->radius = (dotDist < dist)? dot->original_radius * (1.0 + diff*scale) : dot->original_radius;
     }
 }
 
 bool DotScene::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_event) {
-    updateDots(touch, EventTouch::EventCode::BEGAN);
-    updateEntity(touch, EventTouch::EventCode::BEGAN);
+    curTouch = touch;
+    touchType = EventTouch::EventCode::BEGAN;
     return true;
 }
 
 void DotScene::onTouchMoved(cocos2d::Touch *touch, cocos2d::Event *unused_event) {
-    updateDots(touch, EventTouch::EventCode::MOVED);
-    updateEntity(touch, EventTouch::EventCode::BEGAN);
+    curTouch = touch;
+    touchType = EventTouch::EventCode::MOVED;
 }
 
 void DotScene::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event) {
-    updateDots(touch, EventTouch::EventCode::ENDED);
-    updateEntity(touch, EventTouch::EventCode::BEGAN);
+    curTouch = nullptr;
+    touchType = EventTouch::EventCode::ENDED;
 }
 
 DotScene::Dot::Dot(float radius, float x, float y) {

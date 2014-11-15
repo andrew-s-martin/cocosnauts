@@ -20,15 +20,15 @@ public:
     static cocos2d::Scene* createScene();
     virtual bool init();
     CREATE_FUNC(DotScene);
-    void update(float delta);
+    void update(float dt);
     
     bool onTouchBegan(Touch *touch, Event *unused_event);
     void onTouchMoved(Touch *touch, Event *unused_event);
     void onTouchEnded(Touch *touch, Event *unused_event);
     
 private:
-    void updateEntity(Touch *touch, EventTouch::EventCode type);
-    void updateDots(Touch *touch, EventTouch::EventCode type);
+    void updateEntities(float dt);
+    void updateDots(float dt);
     
     class Dot {
     public:
@@ -39,7 +39,9 @@ private:
     };
     std::vector<Dot*> dots;
     DrawNode* draw;
-    Entity* e;
+    std::vector<Entity*> entities;
+    Touch* curTouch;
+    EventTouch::EventCode touchType;
 };
 
 #endif /* defined(__test__DotScene__) */
