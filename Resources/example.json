@@ -1,0 +1,34 @@
+{
+	"size": [1,1], // multiples of screen size
+	"launchPos": [0.2, 0.2], // percentage of level size
+	"goalPos": [0.8, 0.8],
+
+	"entities": {
+		"entity": {
+			"type": "planet",
+			"pos": [1,1],
+			"mass": 10,
+			"radius": 10,
+			"vel": [1,0]
+		},
+		"entity": {
+			"type": "sun",
+			"pos": [1,1],
+			"mass": 10,
+			"vel": [1,0],
+
+			"orbit": {
+				"radius": 10,
+				"speed": 5,
+				"orbitClockwise": true,
+				"entity": {
+					"type": "planet",
+					"pos": [1,1],
+					"mass": 10,
+					"radius": 10,
+					"vel": [1,0]
+				}
+			}
+		}
+	}
+}
