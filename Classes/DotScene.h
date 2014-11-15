@@ -20,8 +20,8 @@ public:
     static cocos2d::Scene* createScene();
     virtual bool init();
     CREATE_FUNC(DotScene);
-    void update(float dt);
     
+    void update(float dt);
     bool onTouchBegan(Touch *touch, Event *unused_event);
     void onTouchMoved(Touch *touch, Event *unused_event);
     void onTouchEnded(Touch *touch, Event *unused_event);

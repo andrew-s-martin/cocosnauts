@@ -19,9 +19,16 @@ public:
     virtual bool init();
     CREATE_FUNC(Entity);
     
+    class Orbit {
+    public:
+        float radius, speed;
+        bool clockwise;
+        Entity *e;
+    };
+    
     Vec2 vel;
     float maxSpeed, mass;
-    bool respondToGravity;
+    std::vector<Orbit> orbits;
 };
 
 #endif /* defined(__test__Entity__) */

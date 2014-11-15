@@ -1,14 +1,12 @@
 #include "AppDelegate.h"
-#include "HelloWorldScene.h"
+#include "LevelScene.h"
 
 USING_NS_CC;
 
 AppDelegate::AppDelegate() {
-
 }
 
-AppDelegate::~AppDelegate() 
-{
+AppDelegate::~AppDelegate() {
 }
 
 bool AppDelegate::applicationDidFinishLaunching() {
@@ -27,7 +25,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     director->setAnimationInterval(1.0 / 60);
 
     // create a scene. it's an autorelease object
-    auto scene = HelloWorld::createScene();
+    auto scene = LevelScene::createScene("jamietest.json");
 
     // run
     director->runWithScene(scene);
