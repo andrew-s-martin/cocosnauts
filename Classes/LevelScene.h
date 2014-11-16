@@ -15,6 +15,7 @@
 #include "BackgroundLayer.h"
 #include "Entity.h"
 #include "Ship.h"
+#include "MagnetPlanet.h"
 
 USING_NS_CC;
 
@@ -35,6 +36,7 @@ public:
 private:
     Entity* buildEntity(rapidjson::Value& eSpec, const char* eType);
     void addOrbit(rapidjson::Value& oSpec, Entity* parent);
+    void updateVelocity(float dt, Ship* ship, Touch* curTouch);
    
     BackgroundLayer* bg;
     int curLevel;
@@ -43,6 +45,7 @@ private:
     Entity *goal;
     Ship *ship;
     std::vector<Entity*> entities;
+    std::vector<MagnetPlanet*> aMagnetPlanets;
 };
 
 #endif /* defined(__test__LevelScene__) */

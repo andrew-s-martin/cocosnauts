@@ -34,7 +34,7 @@ bool LevelScene::init() {
     
     this->scheduleUpdate();
     
-    bg = BackgroundLayer::create();
+    auto bg = BackgroundLayer::create();
     this->addChild(bg);
     
     ship = Ship::create();
@@ -65,9 +65,33 @@ void LevelScene::update(float dt) {
         }
     }
     
+    updateVelocity(dt, ship, curTouch);
+}
+
+void updateVelocity(float dt, Ship* ship, Touch* curTouch){
+    
+    Vec2 touchPos = curTouch->getLocation();
+    Vec2 shipPos = ship->getPosition();
+    
+    //look to see if touch was inside a magnet planet
+    for(MagnetPlanet* m : aMagnetPlanets){
+        Vec2 mPos = m.getPosition();
+        Vec2 dist = mPos - touchPos;
+        
+        //if touch is within the radius of current magnet planet
+        if(dist.length() < m->getRadius()){
+            ship->acc = mPos - shipPos;
+            ship->acc.normalize();
+            
+            float lMagnetism = m->getMagnetism();
+            ship->acc.scale(10*dt*lMagnetism);
+            ship->vel += ship->acc;
+            return;
+        }
+    }
+    
     if (ship->getFuel() > 0 && curTouch) {
-        Vec2 touchPos = curTouch->getLocation();
-        ship->acc = touchPos - ship->getPosition();
+        ship->acc = touchPos - shipPos;
         ship->acc.normalize();
         ship->acc.scale(10*dt);
         ship->vel += ship->acc;
@@ -162,6 +186,10 @@ Entity* LevelScene::buildEntity(rapidjson::Value &eSpec, const char* eType) {
         e = CircleEntity::create();
         auto _e = static_cast<CircleEntity*>(e);
         _e->setColor(Color3B::YELLOW);
+    }
+    else if (strcasecmp(eType, "magnetPlanet") == 0) {
+        aMagnetPlanets.push_back(MagnetPlanet::create());
+        
     }
     
     // parse properties
