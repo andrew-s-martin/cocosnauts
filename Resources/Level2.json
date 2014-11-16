@@ -15,7 +15,8 @@
         "magnetPlanet": {
             "pos": [0.5,0.75],
             "radius": 2.0,
-            "mass": 2.0
+            "mass": 2.0,
+            "magnetism": 5
         }
     }
 }
