@@ -32,7 +32,6 @@ void FuelBar::setHeight(int height) {
 void FuelBar::setMaxWidth(int width) {
     maxWidth = width;
     setScaleX(maxWidth/_defaultSize.width);
-    setColor(fullCol);
 }
 
 void FuelBar::setFillMultiplier(float fillMultiplier) {

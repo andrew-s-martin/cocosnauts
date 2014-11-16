@@ -9,7 +9,7 @@
 #include "BackgroundLayer.h"
 
 bool BackgroundLayer::init() {
-    if (!LayerColor::initWithColor(Color4B::BLACK)) {
+    if (!LayerColor::init()) {
         return false;
     }
     

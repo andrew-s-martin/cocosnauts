@@ -14,6 +14,7 @@
 #include "PauseDialog.h"
 #include "FontManager.h"
 #include "LayoutHelper.h"
+#include "BackgroundLayer.h"
 
 static const int Z_BG = -1;
 static const int Z_ENTITIES = 0;
@@ -235,7 +236,6 @@ void LevelScene::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_even
     for(auto &m : aMagnetPlanets) {
         m->setColor(ColourManager::magnetPlanet);
     }
-
 }
 
 bool LevelScene::readJson(const std::string &jsonStr) {
