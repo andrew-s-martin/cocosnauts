@@ -18,10 +18,14 @@ public:
     FuelBar();
     virtual bool init();
     CREATE_FUNC(FuelBar);
+    void setHeight(int height);
+    void setMaxWidth(int width);
     void setFillMultiplier(float fillMultiplier);
 private:
     Color3B fullCol, emptyCol;
     float fillMultiplier; // 0.0 to 1.0
+    int maxWidth;
+    Size _defaultSize;
 };
 
 #endif /* defined(__Cocosnauts__FuelBar__) */

@@ -30,9 +30,9 @@ bool Ship::init() {
         return false;
     }
     
-    sprite = Sprite::create("triangle.png");
-    aFuel = 10.0;
-    this->addChild(sprite);
+    triangle = Sprite::create("triangle.png");
+    triangle->setScale(0.6f);
+    this->addChild(triangle);
     
     return true;
 }

@@ -15,6 +15,7 @@
 #include "BackgroundLayer.h"
 #include "Entity.h"
 #include "Ship.h"
+#include "FuelBar.h"
 #include "MagnetPlanet.h"
 
 USING_NS_CC;
@@ -39,6 +40,7 @@ private:
     void updateVelocity(float dt, Ship* ship, Touch* curTouch);
    
     BackgroundLayer* bg;
+    FuelBar* fuelBar;
     int curLevel;
     Touch* curTouch;
     EventTouch::EventCode touchType;

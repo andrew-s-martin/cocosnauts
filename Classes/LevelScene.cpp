@@ -11,6 +11,10 @@
 #include "Ship.h"
 #include "CircleEntity.h"
 
+static const int Z_BG = -1;
+static const int Z_ENTITIES = 0;
+static const int Z_HUD = 1;
+
 Scene* LevelScene::createScene(int level) {
     auto scene = Scene::create();
     auto layer = LevelScene::create();
@@ -34,16 +38,25 @@ bool LevelScene::init() {
     
     this->scheduleUpdate();
     
-    auto bg = BackgroundLayer::create();
-    this->addChild(bg);
+    bg = BackgroundLayer::create();
+    this->addChild(bg, Z_BG);
+    
+    auto size = Director::getInstance()->getVisibleSize();
+    fuelBar = FuelBar::create();
+    fuelBar->setHeight(5);
+    fuelBar->setMaxWidth(size.width);
+    fuelBar->setPosition(0, size.height);
+    this->addChild(fuelBar, Z_HUD);
     
     ship = Ship::create();
-    this->addChild(ship);
+    ship->setColor(Color3B::RED);
+    ship->setScale(0.15f);
+    this->addChild(ship, Z_ENTITIES);
     
     goal = CircleEntity::create();
     goal->setColor(Color3B::GREEN);
     goal->setScale(0.15f);
-    this->addChild(goal);
+    this->addChild(goal, Z_ENTITIES);
     
     curTouch = nullptr;
     
@@ -60,10 +73,10 @@ void LevelScene::update(float dt) {
     if (goal->intersect(ship->getPosition(), ship->getRadius())) {
         LevelManager::goNextScene(curLevel);
     }
-//    for (auto e : entities) {
-//        if (ship->intersect(e)) {
-//        }
-//    }
+    for (auto e : entities) {
+        if (e->intersect(ship->getPosition(), ship->getRadius())) {
+        }
+    }
     
     updateVelocity(dt, ship, curTouch);
 }
@@ -95,6 +108,7 @@ void LevelScene::updateVelocity(float dt, Ship* ship, Touch* curTouch){
         ship->acc.scale(10*dt);
         ship->vel += ship->acc;
         ship->setFuel(ship->getFuel() - dt);
+        fuelBar->setFillMultiplier(ship->getFuelPercent());
         CCLOG("%f", ship->getFuel());
     }
 }
@@ -150,6 +164,7 @@ bool LevelScene::readJson(const std::string &jsonStr) {
         else if (strcasecmp(objType, "fuel") == 0) {
             float fuel = objSpec.GetDouble();
             CCLOG("%f", fuel);
+            ship->setMaxFuel(fuel);
             ship->setFuel(fuel);
         }
         
@@ -163,7 +178,7 @@ bool LevelScene::readJson(const std::string &jsonStr) {
                 }
                 
                 auto e = buildEntity(eSpec, eType);
-                this->addChild(e);
+                this->addChild(e, Z_ENTITIES);
                 entities.push_back(e);
             }
         }
@@ -207,7 +222,7 @@ Entity* LevelScene::buildEntity(rapidjson::Value &eSpec, const char* eType) {
             // it's not an orbit, just parse it as an Entity
             else {
                 auto child = buildEntity(propertySpec, propertyType);
-                this->addChild(child);
+                this->addChild(child, Z_ENTITIES);
             }
         }
         

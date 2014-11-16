@@ -21,6 +21,7 @@ public:
     float getFuelPercent();
     
 private:
+    Sprite* triangle;
     float aFuel, maxFuel;
 };
 
