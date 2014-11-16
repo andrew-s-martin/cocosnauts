@@ -15,6 +15,7 @@
 #include "BackgroundLayer.h"
 #include "Entity.h"
 #include "Ship.h"
+#include "FuelBar.h"
 
 USING_NS_CC;
 
@@ -37,6 +38,7 @@ private:
     void addOrbit(rapidjson::Value& oSpec, Entity* parent);
    
     BackgroundLayer* bg;
+    FuelBar* fuelBar;
     int curLevel;
     Touch* curTouch;
     EventTouch::EventCode touchType;

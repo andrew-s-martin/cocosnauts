@@ -15,15 +15,27 @@ fillMultiplier(1.0)
 { }
 
 bool FuelBar::init() {
-    if (Sprite::initWithFile("9_sprite_square.png")) {
+    if (!Sprite::initWithFile("9_sprite_square.png")) {
         return false;
     }
-    this->setColor(fullCol);
+    _defaultSize = this->getTextureRect().size;
+    setAnchorPoint(Vec2(0, 1));
+    setColor(fullCol);
     
     return true;
 }
 
+void FuelBar::setHeight(int height) {
+    setScaleY(height/_defaultSize.height);
+}
+
+void FuelBar::setMaxWidth(int width) {
+    maxWidth = width;
+    setScaleX(maxWidth/_defaultSize.width);
+}
+
 void FuelBar::setFillMultiplier(float fillMultiplier) {
-    this->fillMultiplier = fillMultiplier;
-    this->setColor(Color3B(255*fillMultiplier, 255*(1-fillMultiplier), 0));
+    fillMultiplier = fillMultiplier;
+    setColor(Color3B(255*(1-fillMultiplier), 255*fillMultiplier, 0));
+    setScaleX(fillMultiplier * maxWidth/_defaultSize.width);
 }

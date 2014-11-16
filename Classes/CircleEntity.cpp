@@ -21,7 +21,7 @@ bool CircleEntity::init() {
 
 bool CircleEntity::intersect(Vec2 pos, float radius) {
     auto distance = this->getPosition().distance(pos);
-    auto thisRadius = this->getUnitOrbitRadius();
+    auto thisRadius = this->getRadius();
     return distance < (thisRadius + radius);
 }
 
