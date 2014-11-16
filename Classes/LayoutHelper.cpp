@@ -8,6 +8,13 @@
 
 #include "LayoutHelper.h"
 
+float LayoutHelper::getLevelButtonSize() {
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+    float ret = visibleSize.height/20
+    ;
+    return ret;
+}
+
 float LayoutHelper::getTitleFontSize() {
     auto visibleSize = Director::getInstance()->getVisibleSize();
     float ret = visibleSize.height/12;

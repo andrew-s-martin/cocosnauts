@@ -12,6 +12,8 @@
 #include "Ship.h"
 #include "CircleEntity.h"
 #include "PauseDialog.h"
+#include "FontManager.h"
+#include "LayoutHelper.h"
 
 static const int Z_BG = -1;
 static const int Z_ENTITIES = 0;
@@ -125,10 +127,15 @@ void LevelScene::reset() {
     curTouch = nullptr;
     touchType = EventTouch::EventCode::ENDED;
     
+    for (auto l : labels) {
+        this->removeChild(l);
+    }
+    
     for (auto e : entities) {
         this->removeChild(e);
     }
     
+    labels.clear();
     entities.clear();
     aMagnetPlanets.clear();
     
@@ -260,6 +267,20 @@ bool LevelScene::readJson(const std::string &jsonStr) {
             float fuel = objSpec.GetDouble();
             ship->setMaxFuel(fuel);
             ship->setFuel(fuel);
+        }
+        
+        else if (strcasecmp(objType, "labels") == 0) {
+            auto size = Director::getInstance()->getVisibleSize();
+            for (rapidjson::Value::MemberIterator it = objSpec.MemberonBegin(); it != objSpec.MemberonEnd(); ++it) {
+                rapidjson::Value&eSpec = it->value;
+                const char* text = it->name.GetString();
+                auto x = eSpec[0u].GetDouble();
+                auto y = eSpec[1u].GetDouble();
+                auto l = Label::createWithTTF(text, NSC::FontManager::getFontName(NSC::FontManager::LIGHTITALIC), LayoutHelper::getNormalFontSize());
+                l->setPosition(x * size.width, y * size.height);
+                labels.push_back(l);
+                this->addChild(l);
+            }
         }
         
         else if (strcasecmp(objType, "entities") == 0) {

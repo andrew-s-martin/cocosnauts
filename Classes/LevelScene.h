@@ -62,6 +62,7 @@ private:
     EventTouch::EventCode touchType;
     Entity *goal;
     Ship *ship;
+    std::vector<Label*> labels;
     std::vector<Entity*> entities;
     std::vector<MagnetPlanet*> aMagnetPlanets;
 };

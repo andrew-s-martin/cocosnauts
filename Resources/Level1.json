@@ -1,15 +1,19 @@
 {
     "levelName": "LevelI",
     "levelSize": [1.0,1.0],
-	"launchPos": [0.2, 0.2],
-	"goalPos": [0.8, 0.8],
+	"launchPos": [0.2, 0.5],
+	"goalPos": [0.8, 0.5],
     "fuel": 3.0,
+    
+    "labels": {
+        "Don't bump into planets!": [0.5, 0.1]
+    },
 
 	"entities": {
 		"planet": {
 			"pos": [0.5,0.5],
 			"mass": 1.0,
-			"radius": 1.0,
+			"radius": 0.8,
 			"vel": [0.0,0.0]
         }
 	}
