@@ -19,7 +19,7 @@ USING_NS_CC;
 class LevelScene : public cocos2d::LayerColor
 {
 public:
-    static cocos2d::Scene* createScene(const std::string &jsonStr);
+    static cocos2d::Scene* createScene(int level);
     virtual bool init();
     CREATE_FUNC(LevelScene);
     
@@ -34,6 +34,7 @@ private:
     Entity* buildEntity(rapidjson::Value& eSpec, const char* eType);
     void addOrbit(rapidjson::Value& oSpec, Entity* parent);
    
+    int curLevel;
     Touch* curTouch;
     EventTouch::EventCode touchType;
     Entity *ship, *goal;

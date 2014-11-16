@@ -40,7 +40,7 @@ bool MenuScene::init() {
         if (type != cocos2d::ui::Widget::TouchEventType::ENDED) {
             return;
         }
-        auto scene = LevelScene::createScene("Level1.json");
+        auto scene = LevelScene::createScene(0);
         auto t = TransitionFade::create(1, scene, Color3B::BLACK);
         Director::getInstance()->pushScene(t);
     });

@@ -7,10 +7,13 @@
 //
 
 #include "LevelScene.h"
+#include "LevelManager.h"
 
-Scene* LevelScene::createScene(const std::string &jsonStr) {
+Scene* LevelScene::createScene(int level) {
     auto scene = Scene::create();
     auto layer = LevelScene::create();
+    layer->curLevel = level;
+    auto jsonStr = LevelManager::getJsonString(level);
     layer->readJson(jsonStr);
     scene->addChild(layer);
     return scene;
@@ -52,7 +55,7 @@ void LevelScene::update(float dt) {
     ship->setPosition(ship->getPosition() + ship->vel);
 
     if (ship->intersect(goal)) {
-        CCLOG("ASDF");
+        LevelManager::goNextScene(curLevel);
     }
     for (auto e : entities) {
         if (ship->intersect(e)) {
