@@ -10,7 +10,7 @@
 
 float LayoutHelper::getTitleFontSize() {
     auto visibleSize = Director::getInstance()->getVisibleSize();
-    float ret = visibleSize.height/24;
+    float ret = visibleSize.height/12;
     return ret;
 }
 
@@ -22,14 +22,12 @@ float LayoutHelper::getNormalFontSize() {
 
 float LayoutHelper::getDialogEdgeMargin() {
     auto visibleSize = Director::getInstance()->getVisibleSize();
-    float ret = visibleSize.height/64;
+    float ret = visibleSize.height/10;
     return ret;
 }
 
 float LayoutHelper::getDialogInnerMargin() {
-    auto visibleSize = Director::getInstance()->getVisibleSize();
-    float ret = visibleSize.height/64;
-    return ret;
+    return 32;
 }
 
 float LayoutHelper::getButtonMargin() {
