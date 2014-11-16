@@ -20,7 +20,7 @@ public:
     CREATE_FUNC(Entity);
     
     void updateOrbits(float dt);
-    void setBody();
+    bool intersect(Entity*other);
     
     class Orbit {
     public:

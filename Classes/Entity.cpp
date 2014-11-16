@@ -34,3 +34,11 @@ void Entity::updateOrbits(float dt) {
         o->e->updateOrbits(dt);
     }
 }
+
+bool Entity::intersect(Entity*other) {
+    auto ePos = other->getPosition();
+    auto eRadius = other->sprite->getBoundingBox().size.width/2 * other->getScale();
+    auto distance = this->getPosition().distance(ePos);
+    auto thisRadius = this->sprite->getBoundingBox().size.width/2 * this->getScale();
+    return distance < (thisRadius + eRadius);
+}

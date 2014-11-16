@@ -49,6 +49,16 @@ void LevelScene::update(float dt) {
         e->setPosition(e->getPosition() + e->vel);
         e->updateOrbits(dt);
     }
+    ship->setPosition(ship->getPosition() + ship->vel);
+
+    if (ship->intersect(goal)) {
+        CCLOG("ASDF");
+    }
+    for (auto e : entities) {
+        if (ship->intersect(e)) {
+            CCLOG("ASDFasdf");
+        }
+    }
     
     if (curTouch) {
         Vec2 touchPos = curTouch->getLocation();
@@ -58,9 +68,6 @@ void LevelScene::update(float dt) {
         ship->vel += ship->acc;
         //ship->vel.scale(dt);
     }
-    
-    ship->setPosition(ship->getPosition() + ship->vel);
-
 }
 
 bool LevelScene::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_event) {
