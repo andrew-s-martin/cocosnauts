@@ -27,15 +27,15 @@ void MagnetPlanet::setMagnetism(float pMagnetism){
     aMagnetism = pMagnetism;
 }
 
-bool MagnetPlanet::intersect(cocos2d::Vec2 pos, float radius, cocos2d::Vec2 coll) {
-    auto distance = coll.distance(pos);
-    auto thisRadius = this->getRadius();
-    if (distance < (thisRadius + radius)) return true;
-    
-    for (auto o : orbits) {
-        if (o->e->intersect(convertToNodeSpace(pos), radius)) {
-            return true;
-        }
-    }
-    return false;
-}
+//bool MagnetPlanet::intersect(cocos2d::Vec2 pos, float radius, cocos2d::Vec2 coll) {
+//    auto distance = coll.distance(pos);
+//    auto thisRadius = this->getRadius();
+//    if (distance < (thisRadius + radius)) return true;
+//    
+//    for (auto o : orbits) {
+//        if (o->e->intersect(convertToNodeSpace(pos), radius)) {
+//            return true;
+//        }
+//    }
+//    return false;
+//}

@@ -20,7 +20,7 @@ public:
     void setSprite();
     void setMagnetism(float pMagnetism);
     float getMagnetism();
-    bool intersect(Vec2 pos, float radius, Vec2 coll);
+//    bool intersect(Vec2 pos, float radius, Vec2 coll);
 private:
     int aCounter;
     float aMagnetism;
