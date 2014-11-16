@@ -78,6 +78,10 @@ bool LevelScene::init() {
             pauseButton->setTitleText(paused? "O" : "||");
             if (paused) {
                 this->unscheduleUpdate();
+                auto l = LayerColor::create(Color4B(0, 0, 0, 0));
+                this->addChild(l, Z_DIALOG);
+                l->runAction(FadeTo::create(0.1f, 150));
+                l->setTag(420); // blaze it
                 auto d = PauseDialog::create();
                 this->addChild(d, Z_DIALOG);
                 d->show();
@@ -111,7 +115,6 @@ void LevelScene::reset() {
     auto size = Director::getInstance()->getVisibleSize();
     
     bg->setBgCol(ColourManager::bgCol);
-    bg->setStarsCol(ColourManager::bgStars);
     
     fuelBar->setMaxWidth(size.width - level->getContentSize().width - pauseButton->getContentSize().width);
     fuelBar->setPosition(level->getContentSize().width, size.height);
@@ -148,6 +151,10 @@ void LevelScene::handlePauseDialogDismiss(cocos2d::Ref* r) {
     this->scheduleUpdate();
     paused = false;
     pauseButton->setTitleText("||");
+    auto l = this->getChildByTag(420); // smoke weed every day
+    l->runAction(FadeTo::create(0.1f, 0));
+    l->runAction(Sequence::create(DelayTime::create(0.2f),
+                                     RemoveSelf::create(), NULL));
 }
 
 void LevelScene::update(float dt) {
@@ -210,10 +217,10 @@ void LevelScene::updateShipVelocity(float dt) {
         ship->vel += ship->acc;
         ship->setFuel(ship->getFuel() - dt);
         fuelBar->setFillMultiplier(ship->getFuelPercent());
-        
-        float lAngleInDegrees = atan2f(ship->acc.x, ship->acc.y) * (180 / M_PI);
-        ship->setRotation(lAngleInDegrees);
     }
+    
+    float lAngleInDegrees = atan2f(ship->vel.x, ship->vel.y) * (180 / M_PI);
+    ship->setRotation(lAngleInDegrees);
 }
 
 bool LevelScene::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_event) {

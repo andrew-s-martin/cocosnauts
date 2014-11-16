@@ -29,14 +29,12 @@ float LayoutHelper::getNormalFontSize() {
 
 float LayoutHelper::getDialogEdgeMargin() {
     auto visibleSize = Director::getInstance()->getVisibleSize();
-    float ret = visibleSize.height/64;
+    float ret = visibleSize.height/5;
     return ret;
 }
 
 float LayoutHelper::getDialogInnerMargin() {
-    auto visibleSize = Director::getInstance()->getVisibleSize();
-    float ret = visibleSize.height/64;
-    return ret;
+    return 32;
 }
 
 float LayoutHelper::getButtonMargin() {
