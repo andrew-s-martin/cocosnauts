@@ -32,6 +32,9 @@ bool LevelScene::init() {
     
     this->scheduleUpdate();
     
+    bg = BackgroundLayer::create();
+    this->addChild(bg);
+    
     ship = Entity::create();
     ship->sprite->setTexture("triangle.png");
     ship->setScale(0.15f);
@@ -74,17 +77,20 @@ void LevelScene::update(float dt) {
 }
 
 bool LevelScene::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_event) {
+    bg->onTouchBegan(touch, unused_event);
     curTouch = touch;
     touchType = EventTouch::EventCode::BEGAN;
     return true;
 }
 
 void LevelScene::onTouchMoved(cocos2d::Touch *touch, cocos2d::Event *unused_event) {
+    bg->onTouchMoved(touch, unused_event);
     curTouch = touch;
     touchType = EventTouch::EventCode::MOVED;
 }
 
 void LevelScene::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event) {
+    bg->onTouchEnded(touch, unused_event);
     curTouch = nullptr;
     touchType = EventTouch::EventCode::ENDED;
 }

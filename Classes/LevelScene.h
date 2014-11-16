@@ -12,6 +12,7 @@
 #include "cocos2d.h"
 #include "external/json/rapidjson.h"
 #include "external/json/document.h"
+#include "BackgroundLayer.h"
 #include "Entity.h"
 
 USING_NS_CC;
@@ -34,6 +35,7 @@ private:
     Entity* buildEntity(rapidjson::Value& eSpec, const char* eType);
     void addOrbit(rapidjson::Value& oSpec, Entity* parent);
    
+    BackgroundLayer* bg;
     int curLevel;
     Touch* curTouch;
     EventTouch::EventCode touchType;
