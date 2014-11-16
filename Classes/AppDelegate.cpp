@@ -1,5 +1,5 @@
 #include "AppDelegate.h"
-#include "LevelScene.h"
+#include "MenuScene.h"
 
 USING_NS_CC;
 
@@ -25,7 +25,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     director->setAnimationInterval(1.0 / 60);
 
     // create a scene. it's an autorelease object
-    auto scene = LevelScene::createScene("Level0.json");
+    auto scene = MenuScene::createScene();
 
     // run
     director->runWithScene(scene);
