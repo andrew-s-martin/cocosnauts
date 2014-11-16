@@ -6,7 +6,7 @@
     "fuel": 3.0,
 
 	"entities": {
-		"magnetPlanet": {
+		"planet": {
 			"pos": [0.5,0.5],
 			"mass": 1.0,
 			"radius": 1.0,
