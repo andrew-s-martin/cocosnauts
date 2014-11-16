@@ -38,6 +38,7 @@ bool LevelScene::init() {
     
     this->scheduleUpdate();
     
+<<<<<<< HEAD
     bg = BackgroundLayer::create();
     this->addChild(bg, Z_BG);
     
@@ -47,6 +48,10 @@ bool LevelScene::init() {
     fuelBar->setMaxWidth(size.width);
     fuelBar->setPosition(0, size.height);
     this->addChild(fuelBar, Z_HUD);
+=======
+    auto bg = BackgroundLayer::create();
+    this->addChild(bg);
+>>>>>>> b13870f5da92cffa44c811557cefc8544e494a1c
     
     ship = Ship::create();
     ship->setColor(Color3B::RED);

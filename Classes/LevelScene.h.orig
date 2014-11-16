@@ -15,8 +15,11 @@
 #include "BackgroundLayer.h"
 #include "Entity.h"
 #include "Ship.h"
+<<<<<<< HEAD
 #include "FuelBar.h"
+=======
 #include "MagnetPlanet.h"
+>>>>>>> b13870f5da92cffa44c811557cefc8544e494a1c
 
 USING_NS_CC;
 
