@@ -23,12 +23,10 @@ void CircleEntity::setColor(const cocos2d::Color3B &col) {
     sprite->setColor(col);
 }
 
-bool CircleEntity::intersect(Entity*other) {
-    auto ePos = other->getPosition();
-    auto eRadius = other->getUnitOrbitRadius();
-    auto distance = this->getPosition().distance(ePos);
+bool CircleEntity::intersect(Vec2 pos, float radius) {
+    auto distance = this->getPosition().distance(pos);
     auto thisRadius = this->getUnitOrbitRadius();
-    return distance < (thisRadius + eRadius);
+    return distance < (thisRadius + radius);
 }
 
 float CircleEntity::getUnitOrbitRadius() {

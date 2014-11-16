@@ -16,13 +16,13 @@ public:
     virtual bool init();
     CREATE_FUNC(CircleEntity);
     
-    bool intersect(Entity*other);
+    bool intersect(Vec2 pos, float radius);
     float getUnitOrbitRadius();
     
     void setColor(const Color3B& col);
     
-private:
-    Sprite*sprite;
+protected:
+    Sprite* sprite;
 };
 
 #endif /* defined(__Cocosnauts__CircleEntity__) */

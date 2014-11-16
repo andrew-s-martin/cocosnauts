@@ -9,18 +9,19 @@
 #ifndef __Test__Ship__
 #define __Test__Ship__
 
-#include <stdio.h>
-#include "Entity.h"
+#include "CircleEntity.h"
 
-class Ship : public Entity {
+class Ship : public CircleEntity {
 public:
     virtual bool init();
     CREATE_FUNC(Ship);
     float getFuel();
     void setFuel(float pFuel);
+    void setMaxFuel(float pMaxFuel);
+    float getFuelPercent();
     
 private:
-    float aFuel;
+    float aFuel, maxFuel;
 };
 
 

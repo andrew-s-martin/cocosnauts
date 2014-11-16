@@ -19,7 +19,7 @@ public:
     virtual bool init();
     CREATE_FUNC(Entity);
     
-    virtual bool intersect(Entity*other);
+    virtual bool intersect(Vec2 pos, float radius);
     
     class Orbit {
     public:

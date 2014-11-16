@@ -17,8 +17,16 @@ void Ship::setFuel(float pFuel) {
     aFuel = pFuel;
 }
 
+void Ship::setMaxFuel(float pMaxFuel) {
+    maxFuel = pMaxFuel;
+}
+
+float Ship::getFuelPercent() {
+    return aFuel / maxFuel;
+}
+
 bool Ship::init() {
-    if (!Entity::init()) {
+    if (!CircleEntity::init()) {
         return false;
     }
     

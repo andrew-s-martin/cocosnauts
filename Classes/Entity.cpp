@@ -20,7 +20,7 @@ bool Entity::init() {
     return true;
 }
 
-bool Entity::intersect(Entity *other) {
+bool Entity::intersect(Vec2 pos, float radius) {
     return false;
 }
 
