@@ -35,10 +35,12 @@ public:
     bool readJson(const std::string &jsonStr);
     
 private:
+    void reset();
     Entity* buildEntity(rapidjson::Value& eSpec, const char* eType);
     void addOrbit(rapidjson::Value& oSpec, Entity* parent);
     void updateVelocity(float dt);
    
+    rapidjson::Document doc;
     BackgroundLayer* bg;
     FuelBar* fuelBar;
     int curLevel;

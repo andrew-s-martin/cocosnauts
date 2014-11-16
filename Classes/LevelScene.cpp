@@ -13,14 +13,15 @@
 
 static const int Z_BG = -1;
 static const int Z_ENTITIES = 0;
-static const int Z_HUD = 1;
+static const int Z_GOAL = 1;
+static const int Z_SHIP = 2;
+static const int Z_HUD = 3;
 
 Scene* LevelScene::createScene(int level) {
     auto scene = Scene::create();
     auto layer = LevelScene::create();
     layer->curLevel = level;
-    auto jsonStr = LevelManager::getJsonString(level);
-    layer->readJson(jsonStr);
+    layer->reset();
     scene->addChild(layer);
     return scene;
 }
@@ -36,31 +37,50 @@ bool LevelScene::init() {
     listener->onTouchEnded = CC_CALLBACK_2(LevelScene::onTouchEnded, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
     
-    this->scheduleUpdate();
+    doc.SetObject();
     
     bg = BackgroundLayer::create();
     this->addChild(bg, Z_BG);
     
-    auto size = Director::getInstance()->getVisibleSize();
     fuelBar = FuelBar::create();
+    this->addChild(fuelBar, Z_HUD);
+    
+    goal = CircleEntity::create();
+    this->addChild(goal, Z_GOAL);
+    
+    ship = Ship::create();
+    this->addChild(ship, Z_SHIP);
+    
+    this->reset();
+    
+    this->scheduleUpdate();
+    
+    return true;
+}
+
+void LevelScene::reset() {
+    auto size = Director::getInstance()->getVisibleSize();
     fuelBar->setHeight(5);
     fuelBar->setMaxWidth(size.width);
     fuelBar->setPosition(0, size.height);
-    this->addChild(fuelBar, Z_HUD);
     
+    this->removeChild(ship);
     ship = Ship::create();
     ship->setColor(Color3B::RED);
     ship->setScale(0.15f);
-    this->addChild(ship, Z_ENTITIES);
+    this->addChild(ship);
     
-    goal = CircleEntity::create();
     goal->setColor(Color3B::GREEN);
     goal->setScale(0.15f);
-    this->addChild(goal, Z_ENTITIES);
     
     curTouch = nullptr;
+    touchType = EventTouch::EventCode::ENDED;
     
-    return true;
+    entities.clear();
+    aMagnetPlanets.clear();
+    
+    auto jsonStr = LevelManager::getJsonString(curLevel);
+    readJson(jsonStr);
 }
 
 void LevelScene::update(float dt) {
@@ -75,6 +95,8 @@ void LevelScene::update(float dt) {
     }
     for (auto e : entities) {
         if (e->intersect(ship->getPosition(), ship->getRadius())) {
+            reset();
+            return;
         }
     }
     
@@ -136,9 +158,6 @@ void LevelScene::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_even
 }
 
 bool LevelScene::readJson(const std::string &jsonStr) {
-    rapidjson::Document doc;
-    doc.SetObject();
-    
     std::string json = FileUtils::getInstance()->getStringFromFile(jsonStr);
     CCLOG("%s", json.c_str());
     doc.Parse<0>(json.c_str());
@@ -147,7 +166,7 @@ bool LevelScene::readJson(const std::string &jsonStr) {
         rapidjson::Value&objSpec = it->value;
         const char* objType = it->name.GetString();
         
-        if (strcasecmp(objType, "size") == 0) {
+        if (strcasecmp(objType, "levelSize") == 0) {
         }
         
         else if (strcasecmp(objType, "launchPos") == 0) {
