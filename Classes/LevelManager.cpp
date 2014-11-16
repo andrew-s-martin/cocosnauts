@@ -25,5 +25,6 @@ void LevelManager::goNextLevel(int curLevel) {
     } else {
         scene = LevelScene::createScene(++curLevel);
     }
-    Director::getInstance()->replaceScene(scene);
+    auto t = TransitionFade::create(1.4, scene, Color3B::WHITE);
+    Director::getInstance()->replaceScene(t);
 }

@@ -10,6 +10,7 @@
 #include "BackgroundLayer.h"
 #include "LevelScene.h"
 #include "ButtonFactory.h"
+#include "SimpleAudioEngine.h"
 
 Scene* MenuScene::createScene() {
     auto scene = Scene::create();
@@ -22,6 +23,10 @@ bool MenuScene::init() {
     if (!LayerColor::init()) {
         return false;
     }
+    
+    auto audio =  CocosDenshion::SimpleAudioEngine::getInstance();
+    audio->preloadBackgroundMusic("inonzur.mp3");
+    audio->playBackgroundMusic("inonzur.mp3", true);
     
     auto listener = EventListenerTouchOneByOne::create();
     listener->onTouchBegan = CC_CALLBACK_2(MenuScene::onTouchBegan, this);

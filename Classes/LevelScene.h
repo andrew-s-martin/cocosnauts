@@ -41,6 +41,8 @@ public:
 private:
     void reset();
     
+    void handleGoalTouch(const Vec2& touchPos);
+    
     void handlePauseDialogDismiss(cocos2d::Ref* r);
     
     /** If colliding with boundso or entities, reset scene */
@@ -52,6 +54,8 @@ private:
     Entity* buildEntity(rapidjson::Value& eSpec, const char* eType);
     void addOrbit(rapidjson::Value& oSpec, Entity* parent);
    
+    int shipSoundId;
+    EventListenerTouchOneByOne* listener;
     rapidjson::Document doc;
     BackgroundLayer* bg;
     FuelBar* fuelBar;

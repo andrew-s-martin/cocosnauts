@@ -15,6 +15,7 @@
 #include "FontManager.h"
 #include "LayoutHelper.h"
 #include "BackgroundLayer.h"
+#include "SimpleAudioEngine.h"
 
 static const int Z_BG = -1;
 static const int Z_ENTITIES = 0;
@@ -42,7 +43,7 @@ bool LevelScene::init() {
         return false;
     }
     
-    auto listener = EventListenerTouchOneByOne::create();
+    listener = EventListenerTouchOneByOne::create();
     listener->onTouchBegan = CC_CALLBACK_2(LevelScene::onTouchBegan, this);
     listener->onTouchMoved = CC_CALLBACK_2(LevelScene::onTouchMoved, this);
     listener->onTouchEnded = CC_CALLBACK_2(LevelScene::onTouchEnded, this);
@@ -114,6 +115,11 @@ bool LevelScene::init() {
 void LevelScene::reset() {
     auto size = Director::getInstance()->getVisibleSize();
     
+    std::stringstream ss;
+    ss << curLevel;
+    auto string = "LEVEL " + ss.str();
+    level->setTitleText(string);
+    
     bg->setBgCol(ColourManager::bgCol);
     
     fuelBar->setMaxWidth(size.width - level->getContentSize().width - pauseButton->getContentSize().width);
@@ -147,6 +153,20 @@ void LevelScene::reset() {
     readJson(jsonStr);
 }
 
+void LevelScene::handleGoalTouch(const cocos2d::Vec2 &touchPos) {
+    paused = true;
+    this->_eventDispatcher->removeEventListener(listener);
+    this->unscheduleUpdate();
+    auto circle = Sprite::create("close_normal.png");
+    this->addChild(circle, Z_DIALOG);
+    circle->setPosition(touchPos);
+    circle->setScale(0);
+    circle->runAction(EaseOut::create(ScaleTo::create(0.2, 10), 2.0f));
+    auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+    audio->stopEffect(shipSoundId);
+    LevelManager::goNextLevel(curLevel);
+}
+
 void LevelScene::handlePauseDialogDismiss(cocos2d::Ref* r) {
     this->scheduleUpdate();
     paused = false;
@@ -165,7 +185,7 @@ void LevelScene::update(float dt) {
     ship->setPosition(ship->getPosition() + ship->vel);
 
     if (goal->intersect(ship->getPosition(), ship->getRadius())) {
-        LevelManager::goNextLevel(curLevel);
+        handleGoalTouch(ship->getPosition());
     }
     
     checkResetCollisions();
@@ -227,6 +247,10 @@ bool LevelScene::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_even
     bg->onTouchBegan(touch, unused_event);
     curTouch = touch;
     touchType = EventTouch::EventCode::BEGAN;
+    
+    auto audio =  CocosDenshion::SimpleAudioEngine::getInstance();
+//    shipSoundId = audio->playEffect("zap.mp3", true);
+    
     return true;
 }
 
@@ -243,6 +267,9 @@ void LevelScene::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_even
     for(auto &m : aMagnetPlanets) {
         m->setColor(ColourManager::magnetPlanet);
     }
+    
+    auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+    audio->stopEffect(shipSoundId);
 }
 
 bool LevelScene::readJson(const std::string &jsonStr) {
