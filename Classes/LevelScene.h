@@ -17,6 +17,7 @@
 #include "Ship.h"
 #include "FuelBar.h"
 #include "MagnetPlanet.h"
+#include "Button.h"
 
 USING_NS_CC;
 
@@ -49,11 +50,13 @@ private:
     rapidjson::Document doc;
     BackgroundLayer* bg;
     FuelBar* fuelBar;
+    NSC::ui::Button* pauseButton;
     int curLevel;
     Touch* curTouch;
     EventTouch::EventCode touchType;
     Entity *goal;
     Ship *ship;
+    bool __paused;
     std::vector<Entity*> entities;
     std::vector<MagnetPlanet*> aMagnetPlanets;
 };

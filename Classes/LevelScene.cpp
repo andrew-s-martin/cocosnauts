@@ -10,6 +10,7 @@
 #include "LevelManager.h"
 #include "Ship.h"
 #include "CircleEntity.h"
+#include "ButtonFactory.h"
 
 static const int Z_BG = -1;
 static const int Z_ENTITIES = 0;
@@ -38,6 +39,8 @@ bool LevelScene::init() {
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
     
     doc.SetObject();
+    
+    __paused = false;
     
     bg = BackgroundLayer::create();
     this->addChild(bg, Z_BG);
@@ -69,6 +72,25 @@ void LevelScene::reset() {
     ship->setColor(Color3B::RED);
     ship->setScale(0.15f);
     this->addChild(ship);
+    
+    pauseButton = ButtonFactory::createButton("||");
+    pauseButton->setTitleFontSize(48);
+    pauseButton->setPosition(Vec2(pauseButton->getContentSize().width, size.height - pauseButton->getContentSize().height));
+    pauseButton->addTouchEventListener([&](cocos2d::Ref*, cocos2d::ui::Widget::TouchEventType type) {
+        if (type == cocos2d::ui::Widget::TouchEventType::ENDED) {
+            if (!__paused) {
+                pauseButton->setTitleText("O");
+                Director::getInstance()->pause();
+            }
+            else {
+                pauseButton->setTitleText("||");
+                Director::getInstance()->resume();
+            }
+            __paused = !__paused;
+        }
+    });
+
+    this->addChild(pauseButton);
     
     goal->setColor(Color3B::GREEN);
     goal->setScale(0.15f);
@@ -163,13 +185,14 @@ void LevelScene::onTouchMoved(cocos2d::Touch *touch, cocos2d::Event *unused_even
 }
 
 void LevelScene::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event) {
+    CCLOG("Here");
     bg->onTouchEnded(touch, unused_event);
+    
     curTouch = nullptr;
     touchType = EventTouch::EventCode::ENDED;
     for(auto &m : aMagnetPlanets) {
         m->setColor(Color3B(200,200,200));
     }
-
 }
 
 bool LevelScene::readJson(const std::string &jsonStr) {
