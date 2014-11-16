@@ -100,6 +100,7 @@ void LevelScene::update(float dt) {
 
 void LevelScene::checkResetCollisions() {
     auto b = this->getBoundingBox();
+    
     if (!b.containsPoint(ship->getPosition())) {
         reset();
         return;
@@ -127,6 +128,7 @@ void LevelScene::updateShipVelocity(float dt) {
         
         //if touch is within the radius of current magnet planet
         if(m->intersect(touchPos, 0.0)){
+            m->setColor(Color3B(0,255,0));
             Vec2 mPos = m->getPosition();
             ship->acc = mPos - shipPos;
             ship->acc.normalize();
@@ -149,7 +151,6 @@ void LevelScene::updateShipVelocity(float dt) {
         
         float lAngleInDegrees = atan2f(ship->acc.x, ship->acc.y) * (180 / M_PI);
         ship->setRotation(lAngleInDegrees);
-        CCLOG("%f", ship->acc.getAngle()*(180 / M_PI));
     }
 }
 
@@ -170,11 +171,14 @@ void LevelScene::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_even
     bg->onTouchEnded(touch, unused_event);
     curTouch = nullptr;
     touchType = EventTouch::EventCode::ENDED;
+    for(auto &m : aMagnetPlanets) {
+        m->setColor(Color3B(200,200,200));
+    }
+
 }
 
 bool LevelScene::readJson(const std::string &jsonStr) {
     std::string json = FileUtils::getInstance()->getStringFromFile(jsonStr);
-    CCLOG("%s", json.c_str());
     doc.Parse<0>(json.c_str());
     
     for (rapidjson::Value::MemberIterator it = doc.MemberonBegin(); it != doc.MemberonEnd(); ++it) {
@@ -200,7 +204,6 @@ bool LevelScene::readJson(const std::string &jsonStr) {
         
         else if (strcasecmp(objType, "fuel") == 0) {
             float fuel = objSpec.GetDouble();
-            CCLOG("%f", fuel);
             ship->setMaxFuel(fuel);
             ship->setFuel(fuel);
         }
