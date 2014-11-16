@@ -17,6 +17,7 @@ public:
     virtual bool init();
     CREATE_FUNC(MagnetPlanet);
     
+    void setMagnetism(float pMagnetism);
     float getMagnetism();
 private:
     float aMagnetism;
