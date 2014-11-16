@@ -3,7 +3,11 @@
     "levelSize": [1.0,1.0],
     "launchPos": [0.1, 0.8],
     "goalPos": [0.1, 0.2],
-    "fuel": 0.2,
+    "fuel": 0.5,
+    
+    "labels": {
+        "Magnet planets...": [0.5, 0.1]
+    },
     
     "entities": {
         "planet": {

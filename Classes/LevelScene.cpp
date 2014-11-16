@@ -6,17 +6,26 @@
 //
 //
 
+#include "ButtonFactory.h"
 #include "LevelScene.h"
 #include "LevelManager.h"
 #include "Ship.h"
 #include "CircleEntity.h"
-#include "ButtonFactory.h"
+#include "PauseDialog.h"
+#include "FontManager.h"
+#include "LayoutHelper.h"
 
 static const int Z_BG = -1;
 static const int Z_ENTITIES = 0;
 static const int Z_GOAL = 1;
 static const int Z_SHIP = 2;
-static const int Z_HUD = 3;
+static const int Z_FUELBAR = 3;
+static const int Z_HUD = 4;
+static const int Z_DIALOG = 5;
+
+LevelScene::~LevelScene() {
+    NotificationCenter::getInstance()->removeObserver(this, "BaseDialogDismiss-Default");
+}
 
 Scene* LevelScene::createScene(int level) {
     auto scene = Scene::create();
@@ -40,13 +49,49 @@ bool LevelScene::init() {
     
     doc.SetObject();
     
-    __paused = false;
-    
     bg = BackgroundLayer::create();
     this->addChild(bg, Z_BG);
     
+    auto size = Director::getInstance()->getVisibleSize();
+    
     fuelBar = FuelBar::create();
-    this->addChild(fuelBar, Z_HUD);
+    this->addChild(fuelBar, Z_FUELBAR);
+    
+    std::stringstream ss;
+    ss << curLevel;
+    auto string = "LEVEL " + ss.str();
+    level = ButtonFactory::createButton(string.c_str());
+    level->Button::setColor(Color3B::WHITE);
+    level->Button::loadTextures("9_sprite_square.png", "9_sprite_square.png");
+    level->setTouchEnabled(false);
+    auto levelSize = level->getContentSize();
+    level->cocos2d::Node::setPosition(levelSize.width/2, size.height - levelSize.height/2);
+    this->addChild(level, Z_HUD);
+    
+    pauseButton = ButtonFactory::createButton("||");
+    auto pauseSize = pauseButton->getContentSize();
+    pauseButton->cocos2d::Node::setPosition(size.width - pauseSize.width/2, size.height - pauseSize.height/2);
+    pauseButton->addTouchEventListener([&](cocos2d::Ref* r, cocos2d::ui::Widget::TouchEventType type) {
+        if (type == ui::Widget::TouchEventType::ENDED) {
+            paused = !paused;
+            pauseButton->setTitleText(paused? "O" : "||");
+            if (paused) {
+                this->unscheduleUpdate();
+                auto d = PauseDialog::create();
+                this->addChild(d, Z_DIALOG);
+                d->show();
+            } else {
+                this->scheduleUpdate();
+            }
+        }
+    });
+    pauseButton->Button::setColor(Color3B::WHITE);
+    pauseButton->Button::loadTextures("9_sprite_square.png", "9_sprite_square.png");
+    this->addChild(pauseButton, Z_HUD);
+    NotificationCenter::getInstance()->addObserver(this, callfuncO_selector(LevelScene::handlePauseDialogDismiss),
+                                                   "BaseDialogDismiss-Default", NULL);
+    
+    fuelBar->setHeight(pauseSize.height);
     
     goal = CircleEntity::create();
     this->addChild(goal, Z_GOAL);
@@ -63,46 +108,45 @@ bool LevelScene::init() {
 
 void LevelScene::reset() {
     auto size = Director::getInstance()->getVisibleSize();
-    fuelBar->setHeight(5);
-    fuelBar->setMaxWidth(size.width);
-    fuelBar->setPosition(0, size.height);
+    
+    bg->setBgCol(ColourManager::bgCol);
+    bg->setStarsCol(ColourManager::bgStars);
+    
+    fuelBar->setMaxWidth(size.width - level->getContentSize().width - pauseButton->getContentSize().width);
+    fuelBar->setPosition(level->getContentSize().width, size.height);
     
     this->removeChild(ship);
     ship = Ship::create();
-    ship->setColor(Color3B::RED);
+    ship->setColor(ColourManager::ship);
     ship->setScale(0.15f);
     this->addChild(ship);
     
-    pauseButton = ButtonFactory::createButton("||");
-    pauseButton->setTitleFontSize(48);
-    pauseButton->setPosition(Vec2(pauseButton->getContentSize().width, size.height - pauseButton->getContentSize().height));
-    pauseButton->addTouchEventListener([&](cocos2d::Ref*, cocos2d::ui::Widget::TouchEventType type) {
-        if (type == cocos2d::ui::Widget::TouchEventType::ENDED) {
-            if (!__paused) {
-                pauseButton->setTitleText("O");
-                Director::getInstance()->pause();
-            }
-            else {
-                pauseButton->setTitleText("||");
-                Director::getInstance()->resume();
-            }
-            __paused = !__paused;
-        }
-    });
-
-    this->addChild(pauseButton);
-    
-    goal->setColor(Color3B::GREEN);
+    goal->setColor(ColourManager::goal);
     goal->setScale(0.15f);
     
     curTouch = nullptr;
     touchType = EventTouch::EventCode::ENDED;
     
+    for (auto l : labels) {
+        this->removeChild(l);
+    }
+    
+    for (auto e : entities) {
+        this->removeChild(e);
+    }
+    
+    labels.clear();
     entities.clear();
     aMagnetPlanets.clear();
     
     auto jsonStr = LevelManager::getJsonString(curLevel);
     readJson(jsonStr);
+}
+
+void LevelScene::handlePauseDialogDismiss(cocos2d::Ref* r) {
+    this->scheduleUpdate();
+    paused = false;
+    pauseButton->setTitleText("||");
 }
 
 void LevelScene::update(float dt) {
@@ -185,13 +229,11 @@ void LevelScene::onTouchMoved(cocos2d::Touch *touch, cocos2d::Event *unused_even
 }
 
 void LevelScene::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event) {
-    CCLOG("Here");
     bg->onTouchEnded(touch, unused_event);
-    
     curTouch = nullptr;
     touchType = EventTouch::EventCode::ENDED;
     for(auto &m : aMagnetPlanets) {
-        m->setColor(Color3B(200,200,200));
+        m->setColor(ColourManager::magnetPlanet);
     }
 }
 
@@ -226,6 +268,20 @@ bool LevelScene::readJson(const std::string &jsonStr) {
             ship->setFuel(fuel);
         }
         
+        else if (strcasecmp(objType, "labels") == 0) {
+            auto size = Director::getInstance()->getVisibleSize();
+            for (rapidjson::Value::MemberIterator it = objSpec.MemberonBegin(); it != objSpec.MemberonEnd(); ++it) {
+                rapidjson::Value&eSpec = it->value;
+                const char* text = it->name.GetString();
+                auto x = eSpec[0u].GetDouble();
+                auto y = eSpec[1u].GetDouble();
+                auto l = Label::createWithTTF(text, NSC::FontManager::getFontName(NSC::FontManager::LIGHTITALIC), LayoutHelper::getNormalFontSize());
+                l->setPosition(x * size.width, y * size.height);
+                labels.push_back(l);
+                this->addChild(l);
+            }
+        }
+        
         else if (strcasecmp(objType, "entities") == 0) {
             for (rapidjson::Value::MemberIterator it = objSpec.MemberonBegin(); it != objSpec.MemberonEnd(); ++it) {
                 rapidjson::Value&eSpec = it->value;
@@ -252,16 +308,17 @@ Entity* LevelScene::buildEntity(rapidjson::Value &eSpec, const char* eType) {
     if (strcasecmp(eType, "planet") == 0) {
         e = CircleEntity::create();
         auto _e = static_cast<CircleEntity*>(e);
-        _e->setColor(Color3B::BLUE);
+        _e->setColor(ColourManager::planet);
     }
     else if (strcasecmp(eType, "sun") == 0) {
         e = CircleEntity::create();
         auto _e = static_cast<CircleEntity*>(e);
-        _e->setColor(Color3B::YELLOW);
+        _e->setColor(ColourManager::sun);
     }
     else if (strcasecmp(eType, "magnetPlanet") == 0) {
         e = MagnetPlanet::create();
         auto _e = static_cast<MagnetPlanet*>(e);
+        _e->setColor(ColourManager::magnetPlanet);
         aMagnetPlanets.push_back(_e);
     }
     

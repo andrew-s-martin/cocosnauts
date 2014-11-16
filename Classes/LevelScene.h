@@ -12,6 +12,7 @@
 #include "cocos2d.h"
 #include "external/json/rapidjson.h"
 #include "external/json/document.h"
+#include "ColourManager.h"
 #include "BackgroundLayer.h"
 #include "Entity.h"
 #include "Ship.h"
@@ -24,6 +25,8 @@ USING_NS_CC;
 class LevelScene : public cocos2d::LayerColor
 {
 public:
+    ~LevelScene();
+    
     static cocos2d::Scene* createScene(int level);
     virtual bool init();
     CREATE_FUNC(LevelScene);
@@ -38,6 +41,8 @@ public:
 private:
     void reset();
     
+    void handlePauseDialogDismiss(cocos2d::Ref* r);
+    
     /** If colliding with boundso or entities, reset scene */
     void checkResetCollisions();
     
@@ -50,13 +55,14 @@ private:
     rapidjson::Document doc;
     BackgroundLayer* bg;
     FuelBar* fuelBar;
-    NSC::ui::Button* pauseButton;
     int curLevel;
     Touch* curTouch;
+    bool paused;
+    NSC::ui::Button *level, *pauseButton;
     EventTouch::EventCode touchType;
     Entity *goal;
     Ship *ship;
-    bool __paused;
+    std::vector<Label*> labels;
     std::vector<Entity*> entities;
     std::vector<MagnetPlanet*> aMagnetPlanets;
 };

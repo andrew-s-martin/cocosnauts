@@ -1,7 +1,11 @@
 {
     "levelName": "Level0",
     "levelSize": [1.0, 1.0],
-    "launchPos": [0.2, 0.2],
-    "goalPos": [0.8, 0.8],
-    "fuel": 3.0
+    "launchPos": [0.2, 0.5],
+    "goalPos": [0.8, 0.5],
+    "fuel": 3.0,
+    
+    "labels": {
+        "Tap in a direction to move!": [0.5, 0.1]
+    }
 }

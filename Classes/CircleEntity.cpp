@@ -22,7 +22,14 @@ bool CircleEntity::init() {
 bool CircleEntity::intersect(Vec2 pos, float radius) {
     auto distance = this->getPosition().distance(pos);
     auto thisRadius = this->getRadius();
-    return distance < (thisRadius + radius);
+    if (distance < (thisRadius + radius)) return true;
+    
+    for (auto o : orbits) {
+        if (o->e->intersect(convertToNodeSpace(pos), radius)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 float CircleEntity::getUnitOrbitRadius() {

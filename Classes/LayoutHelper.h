@@ -15,6 +15,7 @@ USING_NS_CC;
 
 class LayoutHelper {
 public:
+    static float getLevelButtonSize();
     static float getTitleFontSize();
     static float getNormalFontSize();
     static float getDialogEdgeMargin();
