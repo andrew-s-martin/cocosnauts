@@ -17,5 +17,5 @@ const std::string LevelManager::getJsonString(int level) {
 
 void LevelManager::goNextScene(int curLevel) {
     auto scene = LevelScene::createScene(++curLevel);
-    Director::getInstance()->pushScene(scene);
+    Director::getInstance()->replaceScene(scene);
 }
