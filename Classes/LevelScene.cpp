@@ -8,6 +8,7 @@
 
 #include "LevelScene.h"
 #include "LevelManager.h"
+#include "CircleEntity.h"
 
 Scene* LevelScene::createScene(int level) {
     auto scene = Scene::create();
@@ -35,13 +36,14 @@ bool LevelScene::init() {
     bg = BackgroundLayer::create();
     this->addChild(bg);
     
-    ship = Entity::create();
-    ship->sprite->setTexture("triangle.png");
+    ship = CircleEntity::create();
+    ship->setColor(Color3B::RED);
     ship->setScale(0.15f);
 
     this->addChild(ship);
     
-    goal = Entity::create();
+    goal = CircleEntity::create();
+    goal->setColor(Color3B::GREEN);
     goal->setScale(0.15f);
     this->addChild(goal);
     
@@ -148,10 +150,14 @@ Entity* LevelScene::buildEntity(rapidjson::Value &eSpec, const char* eType) {
     
     // parse eType
     if (strcasecmp(eType, "planet") == 0) {
-        e->sprite->setColor(Color3B::BLUE);
+        e = CircleEntity::create();
+        auto _e = static_cast<CircleEntity*>(e);
+        _e->setColor(Color3B::BLUE);
     }
     else if (strcasecmp(eType, "sun") == 0) {
-        e->sprite->setColor(Color3B::YELLOW);
+        e = CircleEntity::create();
+        auto _e = static_cast<CircleEntity*>(e);
+        _e->setColor(Color3B::YELLOW);
     }
     
     // parse properties
@@ -218,8 +224,5 @@ void LevelScene::addOrbit(rapidjson::Value &oSpec, Entity *parent) {
             o->curAngle = propertySpec.GetDouble() * M_PI / 180;
         }
     }
-    auto parentRadius = parent->sprite->getContentSize().height/2;
-    o->e->setPositionX(o->radius*parentRadius);
-    parent->addChild(o->e);
-    parent->orbits.push_back(o);
+    parent->addOrbit(o);
 }
