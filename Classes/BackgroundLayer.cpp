@@ -54,6 +54,16 @@ void BackgroundLayer::generateNewDots() {
     }
 }
 
+void BackgroundLayer::setBgCol(const Color3B& col) {
+    this->setColor(col);
+}
+
+void BackgroundLayer::setStarsCol(const Color3B& col) {
+    for (auto dot : dots) {
+        dot->setColor(col);
+    }
+}
+
 void BackgroundLayer::update(float dt) {
     
 }

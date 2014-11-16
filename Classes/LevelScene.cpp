@@ -14,6 +14,7 @@
 #include "PauseDialog.h"
 #include "FontManager.h"
 #include "LayoutHelper.h"
+#include "BackgroundLayer.h"
 
 static const int Z_BG = -1;
 static const int Z_ENTITIES = 0;
