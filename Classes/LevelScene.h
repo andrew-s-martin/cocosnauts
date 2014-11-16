@@ -36,9 +36,15 @@ public:
     
 private:
     void reset();
+    
+    /** If colliding with boundso or entities, reset scene */
+    void checkResetCollisions();
+    
+    /** Update the ship's velocity */
+    void updateShipVelocity(float dt);
+    
     Entity* buildEntity(rapidjson::Value& eSpec, const char* eType);
     void addOrbit(rapidjson::Value& oSpec, Entity* parent);
-    void updateVelocity(float dt);
    
     rapidjson::Document doc;
     BackgroundLayer* bg;

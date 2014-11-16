@@ -93,17 +93,28 @@ void LevelScene::update(float dt) {
     if (goal->intersect(ship->getPosition(), ship->getRadius())) {
         LevelManager::goNextScene(curLevel);
     }
+    
+    checkResetCollisions();
+    updateShipVelocity(dt);
+}
+
+void LevelScene::checkResetCollisions() {
+    auto b = this->getBoundingBox();
+    if (!b.containsPoint(ship->getPosition())) {
+        reset();
+        return;
+    }
+    
     for (auto e : entities) {
         if (e->intersect(ship->getPosition(), ship->getRadius())) {
             reset();
             return;
         }
     }
-    
-    updateVelocity(dt);
 }
 
-void LevelScene::updateVelocity(float dt) {
+
+void LevelScene::updateShipVelocity(float dt) {
     if (!curTouch) {
         return;
     }
