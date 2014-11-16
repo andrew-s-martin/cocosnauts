@@ -22,8 +22,8 @@ bool BackgroundLayer::init() {
     dotCount = 400;
     minScale = 0.008f;
     scaleRange = 0.01f;
-    maxTouchScaleFactor = 1.3f;
-    ignoreRadius = Director::getInstance()->getVisibleSize().width / 4;
+    maxTouchScaleFactor = 1.2f;
+    ignoreRadius = Director::getInstance()->getVisibleSize().width / 10;
     
     generateNewDots();
     
@@ -32,12 +32,10 @@ bool BackgroundLayer::init() {
     return true;
 }
 
-void BackgroundLayer::clear() {
+void BackgroundLayer::generateNewDots() {
     this->removeAllChildren();
     this->dots.clear();
-}
-
-void BackgroundLayer::generateNewDots() {
+    
     auto size = Director::getInstance()->getVisibleSize();
     int w = size.width;
     int h = size.height;
@@ -49,6 +47,7 @@ void BackgroundLayer::generateNewDots() {
         dot->setPosition(x, y);
         dot->originalScale = minScale + scaleRange * CCRANDOM_0_1();
         dot->setScale(dot->originalScale);
+        dot->setColor(Color3B(CCRANDOM_0_1()*100, CCRANDOM_0_1()*100, CCRANDOM_0_1()*100));
         this->addChild(dot);
         dots.push_back(dot);
     }
@@ -65,7 +64,10 @@ void BackgroundLayer::setStarsCol(const Color3B& col) {
 }
 
 void BackgroundLayer::update(float dt) {
-    
+    for (int i = 0; i < 20; i++) {
+        auto dot = dots.at(rand() % dots.size());
+        dot->setColor(Color3B(CCRANDOM_0_1()*100, CCRANDOM_0_1()*100, CCRANDOM_0_1()*100));
+    }
 }
 
 void BackgroundLayer::updateDots(cocos2d::Touch *touch, EventTouch::EventCode type) {

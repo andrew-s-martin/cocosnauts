@@ -19,7 +19,6 @@ public:
     virtual bool init();
     CREATE_FUNC(BackgroundLayer);
     
-    void clear();
     void generateNewDots();
     void setBgCol(const Color3B& col);
     void setStarsCol(const Color3B& col);

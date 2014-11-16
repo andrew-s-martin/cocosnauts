@@ -8,10 +8,10 @@
 
 #include "ColourManager.h"
 
-const Color3B ColourManager::bgCol (20,13,16);
-const Color3B ColourManager::bgStars (60,30,32);
+const Color3B ColourManager::bgCol (0,0,0);
+const Color3B ColourManager::bgStars (255,255,255);
 const Color3B ColourManager::planet (135,58,44);
-const Color3B ColourManager::sun (212,157,40);
+const Color3B ColourManager::sun (233,230,10);
 const Color3B ColourManager::ship (167,64,68);
-const Color3B ColourManager::goal (144,200,80);
-const Color3B ColourManager::magnetPlanet (236,236,236);
+const Color3B ColourManager::goal (100,250,80);
+const Color3B ColourManager::magnetPlanet (210,210,210);
