@@ -9,12 +9,9 @@
 #include "MagnetPlanet.h"
 
 bool MagnetPlanet::init() {
-    if(!Entity::init()) {
+    if(!CircleEntity::init()) {
         return false;
     }
-    
-    sprite = Sprite::create("close_normal.png");
-    this->addChild(sprite);
     
     return true;
 }

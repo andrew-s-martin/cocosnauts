@@ -21,6 +21,8 @@ public:
     
     void clear();
     void generateNewDots();
+    void setBgCol(const Color3B& col);
+    void setStarsCol(const Color3B& col);
     
     void update(float dt);
     void updateDots(Touch *touch, EventTouch::EventCode type);

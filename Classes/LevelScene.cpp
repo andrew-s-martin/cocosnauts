@@ -60,17 +60,21 @@ bool LevelScene::init() {
 
 void LevelScene::reset() {
     auto size = Director::getInstance()->getVisibleSize();
+    
+    bg->setBgCol(ColourManager::bgCol);
+    bg->setStarsCol(ColourManager::bgStars);
+    
     fuelBar->setHeight(5);
     fuelBar->setMaxWidth(size.width);
     fuelBar->setPosition(0, size.height);
     
     this->removeChild(ship);
     ship = Ship::create();
-    ship->setColor(Color3B::RED);
+    ship->setColor(ColourManager::ship);
     ship->setScale(0.15f);
     this->addChild(ship);
     
-    goal->setColor(Color3B::GREEN);
+    goal->setColor(ColourManager::goal);
     goal->setScale(0.15f);
     
     curTouch = nullptr;
@@ -167,7 +171,7 @@ void LevelScene::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_even
     curTouch = nullptr;
     touchType = EventTouch::EventCode::ENDED;
     for(auto &m : aMagnetPlanets) {
-        m->setColor(Color3B(200,200,200));
+        m->setColor(ColourManager::magnetPlanet);
     }
 
 }
@@ -229,16 +233,17 @@ Entity* LevelScene::buildEntity(rapidjson::Value &eSpec, const char* eType) {
     if (strcasecmp(eType, "planet") == 0) {
         e = CircleEntity::create();
         auto _e = static_cast<CircleEntity*>(e);
-        _e->setColor(Color3B::BLUE);
+        _e->setColor(ColourManager::planet);
     }
     else if (strcasecmp(eType, "sun") == 0) {
         e = CircleEntity::create();
         auto _e = static_cast<CircleEntity*>(e);
-        _e->setColor(Color3B::YELLOW);
+        _e->setColor(ColourManager::sun);
     }
     else if (strcasecmp(eType, "magnetPlanet") == 0) {
         e = MagnetPlanet::create();
         auto _e = static_cast<MagnetPlanet*>(e);
+        _e->setColor(ColourManager::magnetPlanet);
         aMagnetPlanets.push_back(_e);
     }
     

@@ -12,6 +12,7 @@
 #include "cocos2d.h"
 #include "external/json/rapidjson.h"
 #include "external/json/document.h"
+#include "ColourManager.h"
 #include "BackgroundLayer.h"
 #include "Entity.h"
 #include "Ship.h"

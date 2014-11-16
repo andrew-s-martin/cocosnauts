@@ -9,7 +9,7 @@
 #include "BackgroundLayer.h"
 
 bool BackgroundLayer::init() {
-    if (!LayerColor::init()) {
+    if (!LayerColor::initWithColor(Color4B::BLACK)) {
         return false;
     }
     
@@ -51,6 +51,16 @@ void BackgroundLayer::generateNewDots() {
         dot->setScale(dot->originalScale);
         this->addChild(dot);
         dots.push_back(dot);
+    }
+}
+
+void BackgroundLayer::setBgCol(const Color3B& col) {
+    this->setColor(col);
+}
+
+void BackgroundLayer::setStarsCol(const Color3B& col) {
+    for (auto dot : dots) {
+        dot->setColor(col);
     }
 }
 
