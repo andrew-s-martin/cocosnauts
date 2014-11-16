@@ -9,12 +9,16 @@
 #ifndef __ChessExplorer__Button__
 #define __ChessExplorer__Button__
 
+#include "2d/CCLabel.h"
 #include "ui/UIWidget.h"
+
+USING_NS_CC;
 
 namespace NSC {
     namespace ui {
         class Button : public cocos2d::ui::Widget {
         public:
+            
             /**
              * Default constructor
              */
@@ -42,10 +46,8 @@ namespace NSC {
                                   const std::string& disableImage = "",
                                   TextureResType texType = TextureResType::LOCAL);
             
-            
             /**
              * Load textures for button.
-             
              *
              * @param normal    normal state texture name.
              *
@@ -53,8 +55,7 @@ namespace NSC {
              *
              * @param disabled    disabled state texture name.
              *
-             
-             * @param texType    @see UI_TEX_TYPE_LOCAL
+             * @param texType    @see TextureResType
              */
             void loadTextures(const std::string& normal,
                               const std::string& selected,
@@ -66,7 +67,7 @@ namespace NSC {
              *
              * @param normal    normal state texture.
              *
-             * @param texType    @see UI_TEX_TYPE_LOCAL
+             * @param texType    @see TextureResType
              */
             void loadTextureNormal(const std::string& normal, TextureResType texType = TextureResType::LOCAL);
             
@@ -75,7 +76,7 @@ namespace NSC {
              *
              * @param selected    selected state texture.
              *
-             * @param texType    @see UI_TEX_TYPE_LOCAL
+             * @param texType    @see TextureResType
              */
             void loadTexturePressed(const std::string& selected, TextureResType texType = TextureResType::LOCAL);
             
@@ -84,7 +85,7 @@ namespace NSC {
              *
              * @param disabled    dark state texture.
              *
-             * @param texType    @see UI_TEX_TYPE_LOCAL
+             * @param texType    @see TextureResType
              */
             void loadTextureDisabled(const std::string& disabled, TextureResType texType = TextureResType::LOCAL);
             
@@ -93,34 +94,34 @@ namespace NSC {
              *
              * @param capInsets    capinsets for button
              */
-            void setCapInsets(const cocos2d::Rect &capInsets);
+            void setCapInsets(const Rect &capInsets);
             
             /**
              * Sets capinsets for button, if button is using scale9 renderer.
              *
              * @param capInsets    capinsets for button
              */
-            void setCapInsetsNormalRenderer(const cocos2d::Rect &capInsets);
+            void setCapInsetsNormalRenderer(const Rect &capInsets);
             
-            const cocos2d::Rect& getCapInsetsNormalRenderer();
-            
-            /**
-             * Sets capinsets for button, if button is using scale9 renderer.
-             *
-             * @param capInsets    capinsets for button
-             */
-            void setCapInsetsPressedRenderer(const cocos2d::Rect &capInsets);
-            
-            const cocos2d::Rect& getCapInsetsPressedRenderer();
+            const Rect& getCapInsetsNormalRenderer()const;
             
             /**
              * Sets capinsets for button, if button is using scale9 renderer.
              *
              * @param capInsets    capinsets for button
              */
-            void setCapInsetsDisabledRenderer(const cocos2d::Rect &capInsets);
+            void setCapInsetsPressedRenderer(const Rect &capInsets);
             
-            const cocos2d::Rect& getCapInsetsDisabledRenderer();
+            const Rect& getCapInsetsPressedRenderer()const;
+            
+            /**
+             * Sets capinsets for button, if button is using scale9 renderer.
+             *
+             * @param capInsets    capinsets for button
+             */
+            void setCapInsetsDisabledRenderer(const Rect &capInsets);
+            
+            const Rect& getCapInsetsDisabledRenderer()const;
             
             /**
              * Sets if button is using scale9 renderer.
@@ -129,7 +130,7 @@ namespace NSC {
              */
             virtual void setScale9Enabled(bool able);
             
-            bool isScale9Enabled();
+            bool isScale9Enabled()const;
             
             /**
              * Changes if button can be clicked zoom effect.
@@ -142,7 +143,7 @@ namespace NSC {
             virtual void ignoreContentAdaptWithSize(bool ignore) override;
             
             //override "getVirtualRendererSize" method of widget.
-            virtual const cocos2d::Size& getVirtualRendererSize() const override;
+            virtual const Size& getVirtualRendererSize() const override;
             
             //override "getVirtualRenderer" method of widget.
             virtual Node* getVirtualRenderer() override;
@@ -154,8 +155,8 @@ namespace NSC {
             
             void setTitleText(const std::string& text);
             const std::string& getTitleText() const;
-            void setTitleColor(const cocos2d::Color3B& color);
-            const cocos2d::Color3B& getTitleColor() const;
+            void setTitleColor(const Color3B& color);
+            const Color3B& getTitleColor() const;
             void setTitleFontSize(float size);
             float getTitleFontSize() const;
             void setTitleFontName(const std::string& fontName);
@@ -177,40 +178,44 @@ namespace NSC {
             virtual void onPressStateChangedToPressed() override;
             virtual void onPressStateChangedToDisabled() override;
             virtual void onSizeChanged() override;
-            virtual void updateTextureColor() override;
-            virtual void updateTextureOpacity() override;
-            virtual void updateTextureRGBA() override;
+            
             virtual void updateFlippedX() override;
             virtual void updateFlippedY() override;
+            
+            void updateTexturesRGBA();
+            
             void normalTextureScaleChangedWithSize();
             void pressedTextureScaleChangedWithSize();
             void disabledTextureScaleChangedWithSize();
-            virtual Widget* createCloneInstance() override;
-            virtual void copySpecialProperties(Widget* model) override;
+            
             virtual void adaptRenderers() override;
             void updateTitleLocation();
+            
+            virtual Widget* createCloneInstance() override;
+            virtual void copySpecialProperties(Widget* model) override;
+            
         protected:
             Node* _buttonNormalRenderer;
-            Node* _buttonPressedRenderer;
+            Node* _buttonClickedRenderer;
             Node* _buttonDisableRenderer;
-            cocos2d::Label* _titleRenderer;
+            Label* _titleRenderer;
             std::string _normalFileName;
-            std::string _pressedFileName;
+            std::string _clickedFileName;
             std::string _disabledFileName;
             bool _prevIgnoreSize;
             bool _scale9Enabled;
-            cocos2d::Rect _capInsetsNormal;
-            cocos2d::Rect _capInsetsPressed;
-            cocos2d::Rect _capInsetsDisabled;
+            Rect _capInsetsNormal;
+            Rect _capInsetsPressed;
+            Rect _capInsetsDisabled;
             TextureResType _normalTexType;
             TextureResType _pressedTexType;
             TextureResType _disabledTexType;
-            cocos2d::Size _normalTextureSize;
-            cocos2d::Size _pressedTextureSize;
-            cocos2d::Size _disabledTextureSize;
+            Size _normalTextureSize;
+            Size _pressedTextureSize;
+            Size _disabledTextureSize;
             bool _pressedActionEnabled;
-            cocos2d::Color3B _titleColor;
-            cocos2d::Color3B _pressedColor;
+            Color3B _titleColor;
+            Color3B _pressedColor;
             float _normalTextureScaleXInSize;
             float _normalTextureScaleYInSize;
             float _pressedTextureScaleXInSize;
@@ -221,7 +226,19 @@ namespace NSC {
             bool _normalTextureAdaptDirty;
             bool _pressedTextureAdaptDirty;
             bool _disabledTextureAdaptDirty;
+            
+        private:
+            enum class FontType
+            {
+                SYSTEM,
+                TTF
+            };
+            
+            std::string _fontName;
+            int _fontSize;
+            FontType _type;
         };
+        
     }
 }
 
