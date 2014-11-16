@@ -8,6 +8,7 @@
 
 #include "LevelScene.h"
 #include "LevelManager.h"
+#include "Ship.h"
 
 Scene* LevelScene::createScene(int level) {
     auto scene = Scene::create();
@@ -35,10 +36,7 @@ bool LevelScene::init() {
     bg = BackgroundLayer::create();
     this->addChild(bg);
     
-    ship = Entity::create();
-    ship->sprite->setTexture("triangle.png");
-    ship->setScale(0.15f);
-
+    ship = Ship::create();
     this->addChild(ship);
     
     goal = Entity::create();
@@ -51,6 +49,7 @@ bool LevelScene::init() {
 }
 
 void LevelScene::update(float dt) {
+    CCLOG("sup");
     for (auto e : entities) {
         e->setPosition(e->getPosition() + e->vel);
         e->updateOrbits(dt);
@@ -62,17 +61,17 @@ void LevelScene::update(float dt) {
     }
     for (auto e : entities) {
         if (ship->intersect(e)) {
-            CCLOG("ASDFasdf");
         }
     }
     
-    if (curTouch) {
+    if (ship->getFuel() > 0 && curTouch) {
         Vec2 touchPos = curTouch->getLocation();
         ship->acc = touchPos - ship->getPosition();
         ship->acc.normalize();
         ship->acc.scale(10*dt);
         ship->vel += ship->acc;
-        //ship->vel.scale(dt);
+        ship->setFuel(ship->getFuel() - dt);
+        CCLOG("%f", ship->getFuel());
     }
 }
 
@@ -122,6 +121,12 @@ bool LevelScene::readJson(const std::string &jsonStr) {
             float x = objSpec[0u].GetDouble();
             float y = objSpec[1u].GetDouble();
             goal->setPosition(x*size.width, y*size.height);
+        }
+        
+        else if (strcasecmp(objType, "fuel") == 0) {
+            float fuel = objSpec.GetDouble();
+            CCLOG("%f", fuel);
+            ship->setFuel(fuel);
         }
         
         else if (strcasecmp(objType, "entities") == 0) {

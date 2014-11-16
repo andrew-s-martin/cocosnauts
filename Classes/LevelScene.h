@@ -14,6 +14,7 @@
 #include "external/json/document.h"
 #include "BackgroundLayer.h"
 #include "Entity.h"
+#include "Ship.h"
 
 USING_NS_CC;
 
@@ -39,7 +40,8 @@ private:
     int curLevel;
     Touch* curTouch;
     EventTouch::EventCode touchType;
-    Entity *ship, *goal;
+    Entity *goal;
+    Ship *ship;
     std::vector<Entity*> entities;
 };
 
