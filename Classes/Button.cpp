@@ -450,6 +450,9 @@ void Button::updateTexturesRGBA()
 
 void Button::onPressStateChangedToPressed()
 {
+    auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+    audio->playEffect("bloop.mp3");
+    
     if (_pressedTextureLoaded)
     {
         _buttonNormalRenderer->setVisible(false);

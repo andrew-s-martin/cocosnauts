@@ -41,6 +41,7 @@ public:
 private:
     void reset();
     
+    bool magnetTouched(Touch *touch);
     void handleGoalTouch(const Vec2& touchPos);
     
     void handlePauseDialogDismiss(cocos2d::Ref* r);
@@ -54,7 +55,7 @@ private:
     Entity* buildEntity(rapidjson::Value& eSpec, const char* eType);
     void addOrbit(rapidjson::Value& oSpec, Entity* parent);
    
-    int shipSoundId;
+    int shipSoundId, magnetSoundId;
     EventListenerTouchOneByOne* listener;
     rapidjson::Document doc;
     BackgroundLayer* bg;

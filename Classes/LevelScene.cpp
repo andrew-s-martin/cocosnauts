@@ -164,6 +164,7 @@ void LevelScene::handleGoalTouch(const cocos2d::Vec2 &touchPos) {
     circle->runAction(EaseOut::create(ScaleTo::create(0.2, 10), 2.0f));
     auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
     audio->stopEffect(shipSoundId);
+    audio->stopEffect(magnetSoundId);
     LevelManager::goNextLevel(curLevel);
 }
 
@@ -190,6 +191,9 @@ void LevelScene::update(float dt) {
     
     checkResetCollisions();
     updateShipVelocity(dt);
+    
+    float lAngleInDegrees = atan2f(ship->vel.x, ship->vel.y) * (180 / M_PI);
+    ship->setRotation(lAngleInDegrees);
 }
 
 void LevelScene::checkResetCollisions() {
@@ -219,7 +223,7 @@ void LevelScene::updateShipVelocity(float dt) {
     //look to see if touch was inside a magnet planet
     for(auto &m : aMagnetPlanets) {
         //if touch is within the radius of current magnet planet
-        if(m->intersect(touchPos, 0.0)){
+        if(m->intersect(touchPos, 0.0)) {
             m->setColor(Color3B(0,255,0));
             Vec2 mPos = m->getPosition();
             ship->acc = mPos - shipPos;
@@ -237,10 +241,19 @@ void LevelScene::updateShipVelocity(float dt) {
         ship->vel += ship->acc;
         ship->setFuel(ship->getFuel() - dt);
         fuelBar->setFillMultiplier(ship->getFuelPercent());
+    } else {
+        auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+        audio->stopEffect(shipSoundId);
     }
-    
-    float lAngleInDegrees = atan2f(ship->vel.x, ship->vel.y) * (180 / M_PI);
-    ship->setRotation(lAngleInDegrees);
+}
+
+bool LevelScene::magnetTouched(cocos2d::Touch *touch) {
+    for(auto &m : aMagnetPlanets) {
+        if(m->intersect(touch->getLocation(), 0.0)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 bool LevelScene::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_event) {
@@ -249,7 +262,10 @@ bool LevelScene::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_even
     touchType = EventTouch::EventCode::BEGAN;
     
     auto audio =  CocosDenshion::SimpleAudioEngine::getInstance();
-//    shipSoundId = audio->playEffect("zap.mp3", true);
+    shipSoundId = audio->playEffect("scrape.mp3", true);
+    if (magnetTouched(touch)) {
+        magnetSoundId = audio->playEffect("zap.wav", true);
+    }
     
     return true;
 }
@@ -270,6 +286,7 @@ void LevelScene::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_even
     
     auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
     audio->stopEffect(shipSoundId);
+    audio->stopEffect(magnetSoundId);
 }
 
 bool LevelScene::readJson(const std::string &jsonStr) {

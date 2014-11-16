@@ -24,10 +24,6 @@ bool MenuScene::init() {
         return false;
     }
     
-    auto audio =  CocosDenshion::SimpleAudioEngine::getInstance();
-    audio->preloadBackgroundMusic("inonzur.mp3");
-    audio->playBackgroundMusic("inonzur.mp3", true);
-    
     auto listener = EventListenerTouchOneByOne::create();
     listener->onTouchBegan = CC_CALLBACK_2(MenuScene::onTouchBegan, this);
     listener->onTouchMoved = CC_CALLBACK_2(MenuScene::onTouchMoved, this);
@@ -45,6 +41,8 @@ bool MenuScene::init() {
         if (type != cocos2d::ui::Widget::TouchEventType::ENDED) {
             return;
         }
+        auto audio =  CocosDenshion::SimpleAudioEngine::getInstance();
+        
         auto scene = LevelScene::createScene(0);
         auto t = TransitionFade::create(1, scene, Color3B::BLACK);
         Director::getInstance()->pushScene(t);
