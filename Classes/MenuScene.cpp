@@ -9,7 +9,10 @@
 #include "MenuScene.h"
 #include "BackgroundLayer.h"
 #include "LevelScene.h"
-#include "ButtonFactory.h"
+#include "Button.h"
+#include "LayoutHelper.h"
+#include "FontManager.h"
+#include "extensions/cocos-ext.h"
 #include "SimpleAudioEngine.h"
 
 Scene* MenuScene::createScene() {
@@ -35,18 +38,41 @@ bool MenuScene::init() {
     bg = BackgroundLayer::create();
     this->addChild(bg);
     
-    auto start = ButtonFactory::createButton("START");
-    start->cocos2d::Node::setPosition(size.width/2, size.height/2);
+    auto fontSize = size.width/15;
+    
+    auto title = cocos2d::Label::createWithTTF("COCONAUTS", NSC::FontManager::getFontName(NSC::FontManager::EXTRABOLD), fontSize*2);
+    title->setOpacity(0);
+    title->runAction(Sequence::create(DelayTime::create(5), FadeTo::create(2, 255), NULL));
+    title->setPosition(size.width/2, size.height*.8);
+    title->runAction(Sequence::create(DelayTime::create(5), EaseIn::create(MoveBy::create(5, Vec2(0, -size.height*.1)), 1), NULL));
+    this->addChild(title);
+    
+    auto start = NSC::ui::Button::create("9_sprite_rounded.png", "9_sprite_rounded.png");
+    start->setPressedActionEnabled(true);
+    start->setScale9Enabled(true);
+    start->setTitleText("START");
+    start->setTitleFontName(NSC::FontManager::getFontName(NSC::FontManager::EXTRABOLD));
+    start->setTitleFontSize(fontSize);
+    
+    cocos2d::Label* temp = cocos2d::Label::createWithTTF("START", NSC::FontManager::getFontName(NSC::FontManager::BOLDITALIC), fontSize);
+    auto lsize = temp->getContentSize();
+    auto textBuffer = fontSize;
+    auto capInsetSize = 32;
+    
+    start->setSize(Size(MAX(lsize.width + textBuffer, capInsetSize*2), MAX(lsize.height + textBuffer/2, capInsetSize*2)));
+    start->setColor(Color3B(197, 217, 115));
+
+    start->cocos2d::Node::setPosition(size.width/2, size.height*.3);
     start->addTouchEventListener([&](cocos2d::Ref* r, cocos2d::ui::Widget::TouchEventType type) {
         if (type != cocos2d::ui::Widget::TouchEventType::ENDED) {
             return;
         }
-        auto audio =  CocosDenshion::SimpleAudioEngine::getInstance();
-        
         auto scene = LevelScene::createScene(0);
         auto t = TransitionFade::create(1, scene, Color3B::BLACK);
         Director::getInstance()->pushScene(t);
     });
+    start->setOpacity(0);
+    start->runAction(Sequence::create(DelayTime::create(10), FadeTo::create(2, 255), NULL));
     this->addChild(start);
     
     this->scheduleUpdate();

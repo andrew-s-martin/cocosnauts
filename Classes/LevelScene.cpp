@@ -164,6 +164,7 @@ void LevelScene::handleGoalTouch(const cocos2d::Vec2 &touchPos) {
     circle->runAction(EaseOut::create(ScaleTo::create(0.2, 10), 2.0f));
     auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
     audio->playEffect("goal.mp3");
+    audio->playEffect("whoosh.mp3");
     audio->stopEffect(shipSoundId);
     audio->stopEffect(magnetSoundId);
     LevelManager::goNextLevel(curLevel);

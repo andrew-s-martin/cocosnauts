@@ -36,6 +36,7 @@ bool IntroScene::init() {
     audio->preloadEffect("bloop.mp3");
     audio->preloadEffect("ship.mp3");
     audio->preloadEffect("goal.mp3");
+    audio->preloadEffect("whoosh.mp3");
     
     auto size = Director::getInstance()->getVisibleSize();
     
@@ -75,7 +76,7 @@ bool IntroScene::init() {
     this->addChild(label);
     
     this->scheduleUpdate();
-    this->scheduleOnce(schedule_selector(IntroScene::goNext), 9.0f);
+    this->scheduleOnce(schedule_selector(IntroScene::goNext), 12);
     
     return true;
 }
