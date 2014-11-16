@@ -20,6 +20,7 @@ public:
     float getUnitOrbitRadius();
     
     void setColor(const Color3B& col);
+    virtual float getRadius();
     
 protected:
     Sprite* sprite;

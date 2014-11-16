@@ -3,6 +3,7 @@
     "levelSize": [1.0,1.0],
     "launchPos": [0.1,0.9],
     "goalPos": [0.1,0.1],
+    "fuel": 3.0,
     
     "entities": {
         "asteroidBelt": {
@@ -14,7 +15,7 @@
         "magnetPlanet": {
             "pos": [0.5,0.75],
             "radius": 2.0,
-            "mass": 2.0, 
+            "mass": 2.0
         }
     }
 }
