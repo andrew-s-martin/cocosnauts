@@ -7,6 +7,7 @@
 //
 
 #include "MenuScene.h"
+#include "BackgroundLayer.h"
 #include "LevelScene.h"
 #include "ButtonFactory.h"
 
@@ -29,6 +30,10 @@ bool MenuScene::init() {
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
     
     auto size = Director::getInstance()->getVisibleSize();
+    
+    bg = BackgroundLayer::create();
+    this->addChild(bg);
+    
     auto start = ButtonFactory::createButton("START");
     start->cocos2d::Node::setPosition(size.width/2, size.height/2);
     start->addTouchEventListener([&](cocos2d::Ref* r, cocos2d::ui::Widget::TouchEventType type) {
@@ -51,13 +56,14 @@ void MenuScene::update(float dt) {
 }
 
 bool MenuScene::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_event) {
+    bg->onTouchBegan(touch, unused_event);
     return true;
 }
 
 void MenuScene::onTouchMoved(cocos2d::Touch *touch, cocos2d::Event *unused_event) {
-    
+    bg->onTouchMoved(touch, unused_event);
 }
 
 void MenuScene::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event) {
-    
+    bg->onTouchEnded(touch, unused_event);
 }
