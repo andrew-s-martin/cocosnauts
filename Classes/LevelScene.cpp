@@ -6,16 +6,24 @@
 //
 //
 
+#include "ButtonFactory.h"
 #include "LevelScene.h"
 #include "LevelManager.h"
 #include "Ship.h"
 #include "CircleEntity.h"
+#include "PauseDialog.h"
 
 static const int Z_BG = -1;
 static const int Z_ENTITIES = 0;
 static const int Z_GOAL = 1;
 static const int Z_SHIP = 2;
-static const int Z_HUD = 3;
+static const int Z_FUELBAR = 3;
+static const int Z_HUD = 4;
+static const int Z_DIALOG = 5;
+
+LevelScene::~LevelScene() {
+    NotificationCenter::getInstance()->removeObserver(this, "BaseDialogDismiss-Default");
+}
 
 Scene* LevelScene::createScene(int level) {
     auto scene = Scene::create();
@@ -42,8 +50,46 @@ bool LevelScene::init() {
     bg = BackgroundLayer::create();
     this->addChild(bg, Z_BG);
     
+    auto size = Director::getInstance()->getVisibleSize();
+    
     fuelBar = FuelBar::create();
-    this->addChild(fuelBar, Z_HUD);
+    this->addChild(fuelBar, Z_FUELBAR);
+    
+    std::stringstream ss;
+    ss << curLevel;
+    auto string = "LEVEL " + ss.str();
+    level = ButtonFactory::createButton(string.c_str());
+    level->Button::setColor(Color3B::WHITE);
+    level->Button::loadTextures("9_sprite_square.png", "9_sprite_square.png");
+    level->setTouchEnabled(false);
+    auto levelSize = level->getContentSize();
+    level->cocos2d::Node::setPosition(levelSize.width/2, size.height - levelSize.height/2);
+    this->addChild(level, Z_HUD);
+    
+    pauseButton = ButtonFactory::createButton("||");
+    auto pauseSize = pauseButton->getContentSize();
+    pauseButton->cocos2d::Node::setPosition(size.width - pauseSize.width/2, size.height - pauseSize.height/2);
+    pauseButton->addTouchEventListener([&](cocos2d::Ref* r, cocos2d::ui::Widget::TouchEventType type) {
+        if (type == ui::Widget::TouchEventType::ENDED) {
+            paused = !paused;
+            pauseButton->setTitleText(paused? "O" : "||");
+            if (paused) {
+                this->unscheduleUpdate();
+                auto d = PauseDialog::create();
+                this->addChild(d, Z_DIALOG);
+                d->show();
+            } else {
+                this->scheduleUpdate();
+            }
+        }
+    });
+    pauseButton->Button::setColor(Color3B::WHITE);
+    pauseButton->Button::loadTextures("9_sprite_square.png", "9_sprite_square.png");
+    this->addChild(pauseButton, Z_HUD);
+    NotificationCenter::getInstance()->addObserver(this, callfuncO_selector(LevelScene::handlePauseDialogDismiss),
+                                                   "BaseDialogDismiss-Default", NULL);
+    
+    fuelBar->setHeight(pauseSize.height);
     
     goal = CircleEntity::create();
     this->addChild(goal, Z_GOAL);
@@ -64,9 +110,8 @@ void LevelScene::reset() {
     bg->setBgCol(ColourManager::bgCol);
     bg->setStarsCol(ColourManager::bgStars);
     
-    fuelBar->setHeight(5);
-    fuelBar->setMaxWidth(size.width);
-    fuelBar->setPosition(0, size.height);
+    fuelBar->setMaxWidth(size.width - level->getContentSize().width - pauseButton->getContentSize().width);
+    fuelBar->setPosition(level->getContentSize().width, size.height);
     
     this->removeChild(ship);
     ship = Ship::create();
@@ -80,11 +125,21 @@ void LevelScene::reset() {
     curTouch = nullptr;
     touchType = EventTouch::EventCode::ENDED;
     
+    for (auto e : entities) {
+        this->removeChild(e);
+    }
+    
     entities.clear();
     aMagnetPlanets.clear();
     
     auto jsonStr = LevelManager::getJsonString(curLevel);
     readJson(jsonStr);
+}
+
+void LevelScene::handlePauseDialogDismiss(cocos2d::Ref* r) {
+    this->scheduleUpdate();
+    paused = false;
+    pauseButton->setTitleText("||");
 }
 
 void LevelScene::update(float dt) {

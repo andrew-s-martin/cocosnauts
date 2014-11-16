@@ -18,12 +18,15 @@
 #include "Ship.h"
 #include "FuelBar.h"
 #include "MagnetPlanet.h"
+#include "Button.h"
 
 USING_NS_CC;
 
 class LevelScene : public cocos2d::LayerColor
 {
 public:
+    ~LevelScene();
+    
     static cocos2d::Scene* createScene(int level);
     virtual bool init();
     CREATE_FUNC(LevelScene);
@@ -37,6 +40,8 @@ public:
     
 private:
     void reset();
+    
+    void handlePauseDialogDismiss(cocos2d::Ref* r);
     
     /** If colliding with boundso or entities, reset scene */
     void checkResetCollisions();
@@ -52,6 +57,8 @@ private:
     FuelBar* fuelBar;
     int curLevel;
     Touch* curTouch;
+    bool paused;
+    NSC::ui::Button *level, *pauseButton;
     EventTouch::EventCode touchType;
     Entity *goal;
     Ship *ship;

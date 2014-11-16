@@ -10,7 +10,6 @@
 #include "BackgroundLayer.h"
 #include "LevelScene.h"
 #include "ButtonFactory.h"
-#include "PauseDialog.h"
 
 Scene* MenuScene::createScene() {
     auto scene = Scene::create();
@@ -46,10 +45,6 @@ bool MenuScene::init() {
         Director::getInstance()->pushScene(t);
     });
     this->addChild(start);
-    
-    auto d = PauseDialog::create();
-    this->addChild(d);
-    d->show();
     
     this->scheduleUpdate();
     
