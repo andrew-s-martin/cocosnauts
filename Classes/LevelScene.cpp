@@ -91,7 +91,7 @@ void LevelScene::update(float dt) {
     ship->setPosition(ship->getPosition() + ship->vel);
 
     if (goal->intersect(ship->getPosition(), ship->getRadius())) {
-        LevelManager::goNextScene(curLevel);
+        LevelManager::goNextLevel(curLevel);
     }
     
     checkResetCollisions();

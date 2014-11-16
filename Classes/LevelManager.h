@@ -16,7 +16,7 @@ USING_NS_CC;
 class LevelManager {
 public:
     static const std::string getJsonString(int level);
-    static void goNextScene(int curLevel);
+    static void goNextLevel(int curLevel);
 };
 
 #endif /* defined(__Cocosnauts__LevelManager__) */
