@@ -32,6 +32,7 @@ bool LevelScene::init() {
     ship = Entity::create();
     ship->sprite->setTexture("triangle.png");
     ship->setScale(0.15f);
+
     this->addChild(ship);
     
     goal = Entity::create();
@@ -48,6 +49,18 @@ void LevelScene::update(float dt) {
         e->setPosition(e->getPosition() + e->vel);
         e->updateOrbits(dt);
     }
+    
+    if (curTouch) {
+        Vec2 touchPos = curTouch->getLocation();
+        ship->acc = touchPos - ship->getPosition();
+        ship->acc.normalize();
+        ship->acc.scale(10*dt);
+        ship->vel += ship->acc;
+        //ship->vel.scale(dt);
+    }
+    
+    ship->setPosition(ship->getPosition() + ship->vel);
+
 }
 
 bool LevelScene::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_event) {

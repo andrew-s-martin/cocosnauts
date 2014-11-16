@@ -20,6 +20,7 @@ public:
     CREATE_FUNC(Entity);
     
     void updateOrbits(float dt);
+    void setBody();
     
     class Orbit {
     public:
@@ -27,7 +28,7 @@ public:
         Entity *e;
     };
     
-    Vec2 vel;
+    Vec2 vel, acc;
     float maxSpeed, mass;
     std::vector<Orbit*> orbits;
     Sprite* sprite;
