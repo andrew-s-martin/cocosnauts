@@ -16,18 +16,24 @@ bool Entity::init() {
     if (!Layer::init()) {
         return false;
     }
-    
-    sprite = Sprite::create("close_normal.png");
-    this->addChild(sprite);
     this->setContentSize(Size::ZERO);
-    
     return true;
+}
+
+bool Entity::intersect(Entity *other) {
+    return false;
+}
+
+void Entity::addOrbit(Orbit*o) {
+    o->e->setPositionX(o->radius*getUnitOrbitRadius());
+    this->addChild(o->e);
+    this->orbits.push_back(o);
 }
 
 void Entity::updateOrbits(float dt) {
     for (auto o : orbits) {
         o->curAngle += o->speed * 2 * M_PI * dt;
-        auto parentRadius = sprite->getContentSize().height/2;
+        auto parentRadius = getUnitOrbitRadius();
         float x = cosf(o->curAngle) * o->radius * parentRadius;
         float y = sinf(o->curAngle) * o->radius * parentRadius;
         o->e->setPosition(x, y);
@@ -35,10 +41,6 @@ void Entity::updateOrbits(float dt) {
     }
 }
 
-bool Entity::intersect(Entity*other) {
-    auto ePos = other->getPosition();
-    auto eRadius = other->sprite->getBoundingBox().size.width/2 * other->getScale();
-    auto distance = this->getPosition().distance(ePos);
-    auto thisRadius = this->sprite->getBoundingBox().size.width/2 * this->getScale();
-    return distance < (thisRadius + eRadius);
+float Entity::getUnitOrbitRadius() {
+    return 0;
 }

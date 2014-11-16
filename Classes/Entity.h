@@ -19,19 +19,21 @@ public:
     virtual bool init();
     CREATE_FUNC(Entity);
     
-    void updateOrbits(float dt);
-    bool intersect(Entity*other);
+    virtual bool intersect(Entity*other);
     
     class Orbit {
     public:
         float radius, speed, curAngle;
         Entity *e;
     };
+    void addOrbit(Orbit* o);
+    void updateOrbits(float dt);
+    
+    virtual float getUnitOrbitRadius();
     
     Vec2 vel, acc;
     float maxSpeed, mass;
     std::vector<Orbit*> orbits;
-    Sprite* sprite;
 };
 
 #endif /* defined(__test__Entity__) */
