@@ -37,7 +37,7 @@ public:
 private:
     Entity* buildEntity(rapidjson::Value& eSpec, const char* eType);
     void addOrbit(rapidjson::Value& oSpec, Entity* parent);
-    void updateVelocity(float dt, Ship* ship, Touch* curTouch);
+    void updateVelocity(float dt);
    
     BackgroundLayer* bg;
     FuelBar* fuelBar;

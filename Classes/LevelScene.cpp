@@ -78,16 +78,19 @@ void LevelScene::update(float dt) {
         }
     }
     
-    updateVelocity(dt, ship, curTouch);
+    updateVelocity(dt);
 }
 
-void LevelScene::updateVelocity(float dt, Ship* ship, Touch* curTouch){
+void LevelScene::updateVelocity(float dt) {
+    if (!curTouch) {
+        return;
+    }
     
-    Vec2 touchPos = curTouch->getLocation();
     Vec2 shipPos = ship->getPosition();
+    Vec2 touchPos = curTouch->getLocation();
     
     //look to see if touch was inside a magnet planet
-    for(auto &m : aMagnetPlanets){
+    for(auto &m : aMagnetPlanets) {
         
         //if touch is within the radius of current magnet planet
         if(m->intersect(touchPos, 0.0)){
@@ -202,10 +205,10 @@ Entity* LevelScene::buildEntity(rapidjson::Value &eSpec, const char* eType) {
         _e->setColor(Color3B::YELLOW);
     }
     else if (strcasecmp(eType, "magnetPlanet") == 0) {
-        auto lMagnetPlanet = MagnetPlanet::create();
-        lMagnetPlanet->setMagnetism(10.0);
-        aMagnetPlanets.push_back(lMagnetPlanet);
-        
+        e = MagnetPlanet::create();
+        auto _e = static_cast<MagnetPlanet*>(e);
+        _e->setMagnetism(10.0);
+        aMagnetPlanets.push_back(_e);
     }
     
     // parse properties
