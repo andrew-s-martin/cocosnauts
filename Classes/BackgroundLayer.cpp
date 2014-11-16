@@ -64,6 +64,13 @@ void BackgroundLayer::setStarsCol(const Color3B& col) {
 }
 
 void BackgroundLayer::update(float dt) {
+    auto size = Director::getInstance()->getVisibleSize();
+
+    for (auto dot : dots) {
+        float x = std::fmod(dot->getPositionX() + 0.2, size.width);
+        dot->setPositionX(x);
+    }
+    
     for (int i = 0; i < 20; i++) {
         auto dot = dots.at(rand() % dots.size());
         dot->setColor(Color3B(CCRANDOM_0_1()*100, CCRANDOM_0_1()*100, CCRANDOM_0_1()*100));
