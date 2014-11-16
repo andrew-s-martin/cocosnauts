@@ -57,7 +57,7 @@ void LevelScene::update(float dt) {
     }
     ship->setPosition(ship->getPosition() + ship->vel);
 
-    if (ship->intersect(goal)) {
+    if (goal->intersect(ship->getPosition(), ship->getRadius())) {
         LevelManager::goNextScene(curLevel);
     }
     for (auto e : entities) {

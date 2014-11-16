@@ -3,6 +3,7 @@
     "levelSize": [1.0,1.0],
 	"launchPos": [0.2, 0.2],
 	"goalPos": [0.8, 0.8],
+    "fuel": 3.0,
 
 	"entities": {
 		"planet": {
