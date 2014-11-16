@@ -34,7 +34,8 @@ bool IntroScene::init() {
     audio->playBackgroundMusic("inonzur.mp3", true);
     audio->preloadEffect("zap.wav");
     audio->preloadEffect("bloop.mp3");
-    audio->preloadEffect("scrape.mp3");
+    audio->preloadEffect("ship.mp3");
+    audio->preloadEffect("goal.mp3");
     
     auto size = Director::getInstance()->getVisibleSize();
     

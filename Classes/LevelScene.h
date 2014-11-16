@@ -19,14 +19,13 @@
 #include "FuelBar.h"
 #include "MagnetPlanet.h"
 #include "Button.h"
+#include "BaseDialog.h"
 
 USING_NS_CC;
 
 class LevelScene : public cocos2d::LayerColor
 {
 public:
-    ~LevelScene();
-    
     static cocos2d::Scene* createScene(int level);
     virtual bool init();
     CREATE_FUNC(LevelScene);
@@ -39,6 +38,20 @@ public:
     bool readJson(const std::string &jsonStr);
     
 private:
+    class LevelDialog : public BaseDialog {
+    public:
+        CREATE_FUNC(LevelDialog);
+        virtual bool init();
+        NSC::ui::Button*_toMenu, *_restart;
+        LevelScene*scene;
+        void dismiss();
+    private:
+        void adjustSize();
+        bool onTouchBegan(Touch*touch, Event*event);
+        void onTouchMoved(Touch*touch, Event*event);
+        void onTouchEnded(Touch*touch, Event*event);
+    };
+    
     void reset();
     
     bool magnetTouched(Touch *touch);
@@ -55,6 +68,7 @@ private:
     Entity* buildEntity(rapidjson::Value& eSpec, const char* eType);
     void addOrbit(rapidjson::Value& oSpec, Entity* parent);
    
+    LevelDialog* dialog;
     int shipSoundId, magnetSoundId;
     EventListenerTouchOneByOne* listener;
     rapidjson::Document doc;

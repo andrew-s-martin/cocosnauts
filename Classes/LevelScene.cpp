@@ -11,7 +11,6 @@
 #include "LevelManager.h"
 #include "Ship.h"
 #include "CircleEntity.h"
-#include "PauseDialog.h"
 #include "FontManager.h"
 #include "LayoutHelper.h"
 #include "BackgroundLayer.h"
@@ -24,10 +23,6 @@ static const int Z_SHIP = 2;
 static const int Z_FUELBAR = 3;
 static const int Z_HUD = 4;
 static const int Z_DIALOG = 5;
-
-LevelScene::~LevelScene() {
-    NotificationCenter::getInstance()->removeObserver(this, "BaseDialogDismiss-Default");
-}
 
 Scene* LevelScene::createScene(int level) {
     auto scene = Scene::create();
@@ -83,9 +78,16 @@ bool LevelScene::init() {
                 this->addChild(l, Z_DIALOG);
                 l->runAction(FadeTo::create(0.1f, 150));
                 l->setTag(420); // blaze it
-                auto d = PauseDialog::create();
-                this->addChild(d, Z_DIALOG);
-                d->show();
+                dialog = LevelDialog::create();
+                dialog->scene = this;
+                dialog->_restart->addTouchEventListener([&](cocos2d::Ref* r, cocos2d::ui::Widget::TouchEventType type) {
+                    if (type == ui::Widget::TouchEventType::ENDED) {
+                        this->reset();
+                        dialog->dismiss();
+                    }
+                });
+                this->addChild(dialog, Z_DIALOG);
+                dialog->show();
             } else {
                 this->scheduleUpdate();
             }
@@ -94,9 +96,7 @@ bool LevelScene::init() {
     pauseButton->Button::setColor(Color3B::WHITE);
     pauseButton->Button::loadTextures("9_sprite_square.png", "9_sprite_square.png");
     this->addChild(pauseButton, Z_HUD);
-    NotificationCenter::getInstance()->addObserver(this, callfuncO_selector(LevelScene::handlePauseDialogDismiss),
-                                                   "BaseDialogDismiss-Default", NULL);
-    
+
     fuelBar->setHeight(pauseSize.height);
     
     goal = CircleEntity::create();
@@ -163,6 +163,7 @@ void LevelScene::handleGoalTouch(const cocos2d::Vec2 &touchPos) {
     circle->setScale(0);
     circle->runAction(EaseOut::create(ScaleTo::create(0.2, 10), 2.0f));
     auto audio = CocosDenshion::SimpleAudioEngine::getInstance();
+    audio->playEffect("goal.mp3");
     audio->stopEffect(shipSoundId);
     audio->stopEffect(magnetSoundId);
     LevelManager::goNextLevel(curLevel);
@@ -262,7 +263,7 @@ bool LevelScene::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_even
     touchType = EventTouch::EventCode::BEGAN;
     
     auto audio =  CocosDenshion::SimpleAudioEngine::getInstance();
-    shipSoundId = audio->playEffect("scrape.mp3", true);
+    shipSoundId = audio->playEffect("ship.mp3", true);
     if (magnetTouched(touch)) {
         magnetSoundId = audio->playEffect("zap.wav", true);
     }
@@ -445,4 +446,60 @@ void LevelScene::addOrbit(rapidjson::Value &oSpec, Entity *parent) {
         }
     }
     parent->addOrbit(o);
+}
+
+bool LevelScene::LevelDialog::init() {
+    if (!BaseDialog::init()) {
+        return false;
+    }
+    
+    this->_title->setString("PAUSE");
+    
+    _toMenu = ButtonFactory::createButton("MENU");
+    _toMenu->addTouchEventListener([&](Ref* r, cocos2d::ui::Widget::TouchEventType type){
+        if (type != cocos2d::ui::Widget::TouchEventType::ENDED) {
+            return;
+        }
+        Director::getInstance()->popToRootScene();
+        this->dismiss();
+    });
+    box->addChild(_toMenu);
+    
+    _restart = ButtonFactory::createButton("RESTART LEVEL");
+    box->addChild(_restart);
+    
+    this->adjustSize();
+    
+    return true;
+}
+
+void LevelScene::LevelDialog::dismiss() {
+    this->scene->handlePauseDialogDismiss(this);
+    BaseDialog::dismiss();
+}
+
+void LevelScene::LevelDialog::adjustSize() {
+    BaseDialog::adjustSize();
+    
+    auto contentBB = getContentBoundingBox();
+    auto size = contentBB.size;
+    _toMenu->cocos2d::Node::setPosition(contentBB.getMidX(), size.height*.7);
+    _restart->cocos2d::Node::setPosition(contentBB.getMidX(), size.height*.3);
+}
+
+bool LevelScene::LevelDialog::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *event) {
+    if (!BaseDialog::onTouchBegan(touch, event)) {
+        return true; // swallow the touch
+    }
+    auto touchPt = touch->getLocation();
+    
+    return true;
+}
+
+void LevelScene::LevelDialog::onTouchMoved(cocos2d::Touch *touch, cocos2d::Event *event) {
+    
+}
+
+void LevelScene::LevelDialog::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *event) {
+    
 }
