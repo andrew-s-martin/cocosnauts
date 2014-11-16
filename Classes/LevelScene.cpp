@@ -97,6 +97,7 @@ void LevelScene::updateVelocity(float dt) {
             Vec2 mPos = m->getPosition();
             ship->acc = mPos - shipPos;
             ship->acc.normalize();
+            ship->setRotation(ship->acc.getAngle());
             
             float lMagnetism = m->getMagnetism();
             ship->acc.scale(10*dt*lMagnetism);
@@ -112,7 +113,10 @@ void LevelScene::updateVelocity(float dt) {
         ship->vel += ship->acc;
         ship->setFuel(ship->getFuel() - dt);
         fuelBar->setFillMultiplier(ship->getFuelPercent());
-        CCLOG("%f", ship->getFuel());
+        
+        float lAngleInDegrees = atan2f(ship->acc.x, ship->acc.y) * (180 / M_PI);
+        ship->setRotation(lAngleInDegrees);
+        CCLOG("%f", ship->acc.getAngle()*(180 / M_PI));
     }
 }
 
