@@ -113,7 +113,6 @@ void LevelScene::checkResetCollisions() {
     }
 }
 
-
 void LevelScene::updateShipVelocity(float dt) {
     if (!curTouch) {
         return;
@@ -124,21 +123,18 @@ void LevelScene::updateShipVelocity(float dt) {
     
     //look to see if touch was inside a magnet planet
     for(auto &m : aMagnetPlanets) {
-        
         //if touch is within the radius of current magnet planet
-        if(m->intersect(touchPos, 0.0)){
+        if(m->intersect(touchPos, 0.0)) {
             Vec2 mPos = m->getPosition();
             ship->acc = mPos - shipPos;
             ship->acc.normalize();
-            ship->setRotation(ship->acc.getAngle());
-            
             float lMagnetism = m->getMagnetism();
             ship->acc.scale(10*dt*lMagnetism);
             ship->vel += ship->acc;
+            ship->setRotation(ship->acc.getAngle());
             return;
         }
     }
-    
     if (ship->getFuel() > 0 && curTouch) {
         ship->acc = touchPos - shipPos;
         ship->acc.normalize();
@@ -149,7 +145,6 @@ void LevelScene::updateShipVelocity(float dt) {
         
         float lAngleInDegrees = atan2f(ship->acc.x, ship->acc.y) * (180 / M_PI);
         ship->setRotation(lAngleInDegrees);
-        CCLOG("%f", ship->acc.getAngle()*(180 / M_PI));
     }
 }
 
@@ -241,7 +236,6 @@ Entity* LevelScene::buildEntity(rapidjson::Value &eSpec, const char* eType) {
     else if (strcasecmp(eType, "magnetPlanet") == 0) {
         e = MagnetPlanet::create();
         auto _e = static_cast<MagnetPlanet*>(e);
-        _e->setMagnetism(10.0);
         aMagnetPlanets.push_back(_e);
     }
     
@@ -262,7 +256,13 @@ Entity* LevelScene::buildEntity(rapidjson::Value &eSpec, const char* eType) {
                 this->addChild(child, Z_ENTITIES);
             }
         }
-        
+        else if (strcasecmp(propertyType, "magnetism") == 0) {
+            auto _e = static_cast<MagnetPlanet*>(e);
+            if (_e) {
+                float magnetism = propertySpec.GetDouble();
+                _e->setMagnetism(magnetism);
+            }
+        }
         else if (strcasecmp(propertyType, "pos") == 0) {
             auto size = Director::getInstance()->getVisibleSize();
             float x = propertySpec[0u].GetDouble();
